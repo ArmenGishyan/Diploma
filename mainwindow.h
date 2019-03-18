@@ -3,10 +3,6 @@
 
 #include <QMainWindow>
 
-namespace Ui {
-class MainWindow;
-}
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -14,9 +10,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void createToolBar();
+    void createMenuBar();
 
 private:
-    Ui::MainWindow *ui;
+    QToolBar* m_mainToolBar;
+    QMenuBar* m_menuBar;
 };
 
 #endif // MAINWINDOW_H
