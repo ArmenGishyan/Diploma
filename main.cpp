@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <list>
+#include <QDebug>
 #include "graph.h"
 
 #include "mainwindow.h"
@@ -52,6 +53,9 @@ int main(int argc, char *argv[])
 
 	std::cout << "\n-----------------print--------------------- " << std::endl;
 
+
+
+    qDebug()<<"vdd"<<std::numeric_limits<double>::max();
 	obj.print();
 
     return a.exec();

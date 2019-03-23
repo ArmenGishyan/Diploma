@@ -1,0 +1,10 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+  <file>./Icons/color.png</file>
+  <file>./Icons/line.png</file>
+  <file>./Icons/rect.png</file>
+  <file>./Icons/point.png</file>
+  <file>./Icons/color.png</file>
+
+</qresource>
+</RCC>
