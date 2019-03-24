@@ -17,7 +17,11 @@ public:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent* event) override;
 
+public:
+    void setCurrentItem(QGraphicsItem* item);
+
 private:
+      QGraphicsItem* m_currentItem;
       GraphicsScene* m_grScene;
       GraphicsView* m_grView;
 };

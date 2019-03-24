@@ -35,7 +35,7 @@ public:
     GraphicsView() = default;
     GraphicsView(QGraphicsScene* scene, QWidget* parent = nullptr);
     virtual ~GraphicsView(){}
-    virtual void print(){}
+
 private slots:
     void sendEvent()
     {

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "gaction.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +27,12 @@ private:
     void createHelpMenu();
     void initEditor();
 
+public slots:
+    void actionClicked(QAction*);
+  //  void handleDrawRect();
+  //  void handleDrawLine();
+  //  void handleDrawPoint();
+
 private:
     Ui::MainWindow *ui;
     QToolBar* m_mainToolBar;
@@ -33,11 +40,11 @@ private:
     QMenu* m_fileMenu;
     QMenu* m_drawMenu;
     QMenu* m_helpMenu;
-    QToolButton* m_drawRect;
-    QToolButton* m_drawLine;
-    QToolButton* m_drawPoint;
-    QToolButton* m_fillSelection;
-    QToolButton* m_selectColor;
+    GAction* m_drawRect;
+    QAction* m_drawLine;
+    QAction* m_drawPoint;
+    QAction* m_fillSelection;
+    QAction* m_selectColor;
     Editor* m_editor;
 
 

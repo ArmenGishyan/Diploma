@@ -91,6 +91,10 @@ void Editor::dropEvent(QDropEvent* eve)
     QWidget::dropEvent(eve);
 }
 
-
+// set Current QGraphics Item
+void Editor::setCurrentItem(QGraphicsItem* item)
+{
+    m_currentItem = item;
+}
 
 
