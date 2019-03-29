@@ -6,6 +6,7 @@
 
 class QGraphicsItem;
 class QGraphicsRectItem;
+class Editor;
 
 
 class GAction : public QAction
@@ -46,5 +47,34 @@ public:
 private:
     GGraphicsPointItem* m_pointItem;
 };
+
+class GStyleAction : public QAction
+{
+public:
+    virtual void execute(Editor* editor) = 0;
+};
+
+class GBrushStyle : public GStyleAction
+{
+public:
+    void execute(Editor* editor) override;
+
+private:
+    Qt::BrushStyle m_brushStyle;
+};
+
+class GPenColor : public GStyleAction
+{
+public:
+    void execute(Editor* editor) override;
+
+};
+
+class GPenStyle : public GStyleAction
+{
+public:
+    void execute(Editor* editor) override;
+};
+
 
 #endif // GACTION_H

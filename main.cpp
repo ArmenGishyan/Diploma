@@ -6,6 +6,7 @@
 
 #include "mainwindow.h"
 #include <QApplication>
+#include <QColorDialog>
 
 
 int main(int argc, char *argv[])
@@ -56,6 +57,9 @@ int main(int argc, char *argv[])
 
 
     qDebug()<<"vdd"<<std::numeric_limits<double>::max();
+    //QColorDialog* colorDialog = new QColorDialog;
+    //colorDialog->show();
+   // qDebug()<<"color = "<<colorDialog->currentColor();
 	obj.print();
 
     return a.exec();

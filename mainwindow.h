@@ -25,10 +25,12 @@ private:
     void createFileMenu();
     void createDrawMenu();
     void createHelpMenu();
+    void createStyleToolBar();
     void initEditor();
 
 public slots:
     void actionClicked(QAction*);
+    void styleActionClicked(QAction*);
   //  void handleDrawRect();
   //  void handleDrawLine();
   //  void handleDrawPoint();
@@ -36,6 +38,7 @@ public slots:
 private:
     Ui::MainWindow *ui;
     QToolBar* m_mainToolBar;
+    QToolBar* m_styleToolBar;
     QMenuBar* m_menuBar;
     QMenu* m_fileMenu;
     QMenu* m_drawMenu;

@@ -16,12 +16,18 @@ public:
     void dragMoveEvent(QDragMoveEvent* event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent* event) override;
+    void setPen(QPen pen) {m_pen = pen;}
+    void setBrush(QBrush brush) {m_brush = brush;}
+    QPen getPen() const {return m_pen;}
+    QBrush getBrush() const {return m_brush;}
 
 public:
     void setCurrentItem(QGraphicsItem* item);
 
 private:
       QGraphicsItem* m_currentItem;
+      QPen m_pen;
+      QBrush m_brush;
       GraphicsScene* m_grScene;
       GraphicsView* m_grView;
 };

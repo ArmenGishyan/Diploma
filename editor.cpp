@@ -1,4 +1,6 @@
 #include "editor.h"
+#include <QPen>
+#include <QBrush>
 #include <QPainter>
 #include <QRect>
 #include <QDebug>
@@ -12,7 +14,10 @@
 
 Editor::Editor(QWidget* parent):QWidget (parent)
 {
-    setFixedSize(500,500);
+    m_pen = QPen();
+    m_brush = QBrush();
+
+    setFixedSize(1500, 800);
     m_grScene  = new GraphicsScene(this);
     m_grView = new GraphicsView(m_grScene);
     QHBoxLayout* lay = new QHBoxLayout;;

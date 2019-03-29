@@ -4,6 +4,7 @@
   <file>./Icons/line.png</file>
   <file>./Icons/rect.png</file>
   <file>./Icons/point.png</file>
+  <file>./Icons/penStyle.png</file>
 
 </qresource>
 </RCC>

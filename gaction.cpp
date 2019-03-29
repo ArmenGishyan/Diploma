@@ -1,6 +1,10 @@
 #include "gaction.h"
+#include "editor.h"
+#include "gstyledialog.h"
 
 #include <QGraphicsItem>
+#include <QColorDialog>
+
 
 GAction::GAction(QObject* parent):QAction (parent){}
 GAction::GAction(const QString &text, QObject *parent):QAction (text, parent) {}
@@ -31,5 +35,34 @@ QRectF GGraphicsPointItem::boundingRect() const
 
 void GGraphicsPointItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+
+}
+
+
+void GPenColor::execute(Editor* editor)
+{
+    qDebug()<<"GLineColor::execute";
+    QColorDialog* colorDialog = new QColorDialog;
+    colorDialog->exec();
+    if(editor) {
+        QPen pen(editor->getPen());
+        pen.setColor(colorDialog->currentColor());
+        editor->setPen(pen);
+    }
+    colorDialog->deleteLater();
+}
+
+void GPenStyle::execute(Editor* editor)
+{
+    GPenStyleDialog* dialog = new GPenStyleDialog;
+    if(QDialog::Accepted == dialog->exec()) {
+        if(editor) {
+            QPen pen(editor->getPen());
+            pen.setWidth(dialog->getWidth());
+            qDebug()<<"style = "<<dialog->getStyle();
+            pen.setStyle(dialog->getStyle());
+            editor->setPen(pen);
+        }
+    }
 
 }

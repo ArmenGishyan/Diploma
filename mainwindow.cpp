@@ -14,11 +14,13 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenuBar();
     createToolBar();
     createFileMenu();
+    createStyleToolBar();
 
     //init Editor
     initEditor();
     setCentralWidget(m_editor);
 
+    //
 }
 
 MainWindow::~MainWindow()
@@ -73,7 +75,23 @@ void MainWindow::createDrawMenu()
 
 }
 
+void MainWindow::createStyleToolBar()
+{
+    m_styleToolBar = new QToolBar(this);
+    connect(m_styleToolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(styleActionClicked(QAction*)));
+    GPenColor* lineColor = new GPenColor;
+    lineColor->setText("Color");
+    lineColor->setIcon(QIcon(":/Icons/color.png"));
+    m_styleToolBar->addAction(lineColor);
 
+    GPenStyle* penStyle = new GPenStyle;
+    penStyle->setText("Pen Style");
+    penStyle->setIcon(QIcon(":/Icons/penStyle.png"));
+    m_styleToolBar->addAction(penStyle);
+
+
+    addToolBar(Qt::LeftToolBarArea, m_styleToolBar);
+}
 void MainWindow::initEditor()
 {
     m_editor = new Editor(this);
@@ -84,4 +102,12 @@ void MainWindow::actionClicked(QAction* action)
     qDebug()<<"actionClicked";
     GAction* gaction = dynamic_cast<GAction*>(action);
     m_editor->setCurrentItem(gaction->getObject());
+}
+
+void MainWindow::styleActionClicked(QAction* action)
+{
+    GStyleAction* styleAction = dynamic_cast<GStyleAction*>(action);
+    if(styleAction) {
+        styleAction->execute(m_editor);
+    }
 }
