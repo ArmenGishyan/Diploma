@@ -16,6 +16,8 @@
 #include <QGridLayout>
 #include <QDebug>
 
+#include "ggraphicsitems.h"
+
 class RectItem;
 
 class GraphicsScene : public QGraphicsScene
@@ -26,6 +28,13 @@ class GraphicsScene : public QGraphicsScene
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* ev) override;
     QVector<QRect> getRects() const;
     void drawCoordinateLines();
+    GGraphicsItem* getCurrentItem() const;
+    void setCurrentItem(GGraphicsItem* item);
+
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+
+private:
+    GGraphicsItem* m_currentItem;
 };
 
 class GraphicsView : public QGraphicsView
@@ -33,7 +42,7 @@ class GraphicsView : public QGraphicsView
     Q_OBJECT
 public:
     GraphicsView() = default;
-    GraphicsView(QGraphicsScene* scene, QWidget* parent = nullptr);
+    GraphicsView(GraphicsScene* scene, QWidget* parent = nullptr);
     virtual ~GraphicsView(){}
 
 private slots:
@@ -52,11 +61,8 @@ private:
 
 //members
 private:
+    GraphicsScene* m_gScene;
     QStack<RectItem*> m_items;
-    QToolButton* rectSelect;
-    QToolButton* m_paint;
-    bool m_mousePress;
-    QGraphicsScene* m_scene;
 };
 
 class RectItem : public QGraphicsRectItem
@@ -69,41 +75,6 @@ public:
 
 private:
     QGraphicsTextItem* m_textItem;
-};
-
-class MyWidget : public QWidget
-{
-    Q_OBJECT
-public:
-    MyWidget(int count, QWidget* parent = nullptr): QWidget(parent)
-    {
-        QGridLayout* lay = new QGridLayout;
-        m_list = new QListWidget(this);
-        m_list->setSelectionMode(QAbstractItemView::MultiSelection);
-        for(int i = 0;i<count;++i) {
-           m_list->addItem(new QListWidgetItem("item ("+QString::number(i)+")"));
-           m_list->item(i)->setCheckState(Qt::Checked);
-           m_list->item(i)->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsEnabled);
-        }
-
-        lay->addWidget(m_list);
-        qDebug()<<"flags"<<m_list->item(1)->flags();
-        if(m_list->item(3)->flags() & Qt::ItemIsSelectable) {
-            qDebug()<<"is Selectable";
-        } else {
-            qDebug()<<"not selectabvle";
-        }
-        connect(m_list, SIGNAL(itemSelectionChanged()), this, SLOT(itemSelect()));
-        setLayout(lay);
-    }
-public slots:
-    void itemSelect()
-    {
-        qDebug()<<m_list->selectedItems();
-    }
-private:
-    QListWidget* m_list;
-
 };
 
 

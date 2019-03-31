@@ -1,5 +1,6 @@
-#ifndef GGRAPHICSPOINTITEM_H
-#define GGRAPHICSPOINTITEM_H
+#ifndef GGRAPHICSSHAPESITEM_H
+#define GGRAPHICSSHAPESITEM_H
+
 
 #include <QAbstractGraphicsShapeItem>
 #include <QPoint>
@@ -19,4 +20,10 @@ private:
     QPoint m_point;
 };
 
-#endif // GGRAPHICSPOINTITEM_H
+class GGraphicsShapesItem
+{
+public:
+    GGraphicsShapesItem();
+};
+
+#endif // GGRAPHICSSHAPESITEM_H

@@ -9,19 +9,15 @@
 #include <QTableWidget>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QEvent>
+#include <QPaintEvent>
 
-GraphicsView::GraphicsView(QGraphicsScene* scene, QWidget* parent):QGraphicsView (scene, parent)
-                                                                  ,m_scene(scene)
+GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView (gScene, parent)
 {
     this->setSceneRect(QRectF(0,0,1000, 1000));
-    rectSelect = new QToolButton(this);
-    m_paint = new QToolButton(this);
-    m_paint->setText("paint");
-    m_paint->setGeometry(100,0,60,30);
-    m_paint->setCheckable(true);
-    connect(m_paint, SIGNAL(clicked(true)), this, SLOT(sendEvent()));
-    rectSelect->setText("Rect");
-    rectSelect->setCheckable(true);
+
+    m_gScene = dynamic_cast<GraphicsScene*>(scene());
+    setMouseTracking(true);
 
     QGridLayout* lay = new QGridLayout;
     setLayout(lay);
@@ -30,56 +26,58 @@ GraphicsView::GraphicsView(QGraphicsScene* scene, QWidget* parent):QGraphicsView
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
 {
-    m_mousePress = false;
-    if(rectSelect->isChecked()) {
-       QRectF rect = m_items.top()->rect();
-       rect.setBottomRight(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
-       m_items.top()->setRect(rect);
-       update();
+    if(m_gScene) {
+        m_gScene->addItem(m_gScene->getCurrentItem());
     }
-    qDebug()<<"GraphicsView::mouseReleaseEvent size = "<<items().size();
-    QGraphicsView::mouseReleaseEvent(ev);
+    update();
+    //QGraphicsView::mouseReleaseEvent(ev);
 }
 void GraphicsView::mousePressEvent(QMouseEvent* ev)
 {
-    if(rectSelect->isChecked()) {
-       m_mousePress = true;
-       m_items.push(new RectItem());
-       QPoint pos = ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value());
-       QRect rect(pos,pos);
-       m_items.top()->setRect(rect);
-       m_scene->addItem(m_items.top());
+    GGraphicsItem* gItem = m_gScene->getCurrentItem();
+
+    if(gItem) {
+       m_gScene->setCurrentItem(gItem->create());
+       m_gScene->update(gItem->boundingRect());
+       qDebug()<<"GraphicsView::mousePressEvent";
     }
-    qDebug()<<"GraphicsView::mousePressEvent";
-    QGraphicsView::mousePressEvent(ev);
+   // QGraphicsView::mousePressEvent(ev);
 }
 void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
 {
-    if(m_mousePress && rectSelect->isChecked()) {
-       QRectF rect = m_items.top()->rect();
-       rect.setBottomRight(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
-       m_items.top()->setRect(rect);
-       m_items.top()->reDrawCoordinate();
+    qDebug()<<"GraphicsView::mouseMoveEvent";
+    if(m_gScene) {
+       qDebug()<<"inside if";
+       GGraphicsItem* item = m_gScene->getCurrentItem();
+       if(item) {
+          item->changeSize(QList<QPoint>() << ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+         // repaint(m_gScene->sceneRect().toRect());
+          //item->show();
+         //  QPainter* painter = new QPainter(this);
+         // QStyleOptionGraphicsItem* style = new QStyleOptionGraphicsItem();
+          item->update();
+          //paint(painter,style,this);
+         // QRect bRect(item->boundingRect().toRect());
+         // QPaintEvent* paintEv = new QPaintEvent(bRect);
+         // qDebug()<<"-----------Success = "<<m_gScene->sendEvent(item, paintEv);
+       }
+       //item->update(item->boundingRect());
+       //m_gScene->update(item->boundingRect());
     }
 
     qDebug()<<"GraphicsView::mouseMoveEvent";
-    QGraphicsView::mouseMoveEvent(ev);
+    //QGraphicsView::mouseMoveEvent(ev);
 }
 
 void GraphicsView::paintEvent(QPaintEvent* ev)
 {
-    if(m_paint->isChecked()) {
-        m_scene->addItem(new QGraphicsRectItem(QRect(50,50,200,200)));
-        qDebug()<<"Rect Added";
-    }
-    qDebug()<<"GraphicsView paint event";
+    qDebug()<<"--------------------------------------------------------------GraphicsView paint event";
     QGraphicsView::paintEvent(ev);
 }
+
 GraphicsScene::GraphicsScene(QObject* parent):QGraphicsScene (parent)
 {
     drawCoordinateLines();
-
-    // setSceneRect(0 , -800, 800, 0);
 }
 
 
@@ -92,15 +90,33 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 {
     qDebug()<<"mouseReleaseEvent";
     QGraphicsScene::mouseReleaseEvent(ev);
-
 }
 
 QVector<QRect> GraphicsScene::getRects() const
 {
     QVector<QRect> vec;
     QList<QGraphicsItem*> rects = items();
-   // qDebug()
-   // for()
+}
+
+GGraphicsItem* GraphicsScene::getCurrentItem() const
+{
+    return m_currentItem;
+}
+
+void GraphicsScene::setCurrentItem(GGraphicsItem* item)
+{
+    qDebug()<<"GraphicsScene::setCurrentItem";
+    m_currentItem = item;
+}
+
+void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    qDebug()<<"vfdbvjdbfvvbdfvdbvdbvdvbdjfvdjbvdvjdbvjdb";
+}
+
+void GraphicsScene::drawCoordinateLines()
+{
+    addLine(10,0,10,100, QPen(QBrush(Qt::green),10));
 }
 
 RectItem::RectItem(QGraphicsItem* parent) : QGraphicsRectItem (parent)
@@ -115,7 +131,3 @@ void RectItem::reDrawCoordinate()
     m_textItem->setPos(point);
 }
 
-void GraphicsScene::drawCoordinateLines()
-{
-    addLine(10,0,10,100, QPen(QBrush(Qt::green),10));
-}
