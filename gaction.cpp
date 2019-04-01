@@ -25,7 +25,7 @@ GPointAction::GPointAction(const QIcon &icon, const QString &text, QObject *pare
 
 QGraphicsItem* GPointAction::getObject()
 {
-    return new GGraphicsPointItem;
+    return nullptr;//new GGraphicsPointItem;
 }
 
 QRectF GGraphicsPointItem::boundingRect() const

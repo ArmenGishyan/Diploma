@@ -52,10 +52,7 @@ private:
 
 //members
 private:
-    QStack<RectItem*> m_items;
-    QToolButton* rectSelect;
-    QToolButton* m_paint;
-    bool m_mousePress;
+    QGraphicsItem* m_rect;
     QGraphicsScene* m_scene;
 };
 
