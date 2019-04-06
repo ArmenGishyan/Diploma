@@ -80,4 +80,3 @@ void GGraphicsPointItem::changeSize(const QList<QPoint>& points)
 {
 
 }
->>>>>>> 02a5968509048d8d2d6186b713ab12087fcefa06

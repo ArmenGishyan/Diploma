@@ -17,12 +17,13 @@ GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView
     this->setSceneRect(QRectF(0,0,1000, 1000));
     setBackgroundBrush(QBrush(Qt::red, Qt::SolidPattern));
 
-    m_rect = new QGraphicsRectItem;
+    m_rect = nullptr;
 
     setMouseTracking(true);
 
     QGridLayout* lay = new QGridLayout;
     setLayout(lay);
+    m_gScene = gScene;
 
 }
 
@@ -33,6 +34,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
        QRectF rect = rectItem->rect();// m_items.top()->rect();
        rect.setBottomRight(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
        rectItem->setRect(rect);
+       m_rect = nullptr;
        update();
     }
 
@@ -47,7 +49,7 @@ void GraphicsView::mousePressEvent(QMouseEvent* ev)
         QPoint pos = ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value());
         QRectF rect(pos,pos);
         rectItem->setRect(rect);
-        m_scene->addItem(m_rect);
+        m_gScene->addItem(m_rect);
     }
 
     qDebug()<<"GraphicsView::mousePressEvent";
@@ -60,48 +62,15 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
        QRectF rect = rectItem->rect();
        rect.setBottomRight(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
        rectItem->setRect(rect);
-    if(m_gScene) {
-        m_gScene->addItem(m_gScene->getCurrentItem());
-    }
-    update();
+
+        if(m_gScene && ev->button() == Qt::RightButton) {
+            m_gScene->addItem(rectItem);
+        }
+        update();
     //QGraphicsView::mouseReleaseEvent(ev);
-}
-void GraphicsView::mousePressEvent(QMouseEvent* ev)
-{
-    GGraphicsItem* gItem = m_gScene->getCurrentItem();
-
-    if(gItem) {
-       m_gScene->setCurrentItem(gItem->create());
-       m_gScene->update(gItem->boundingRect());
-       qDebug()<<"GraphicsView::mousePressEvent";
     }
-   // QGraphicsView::mousePressEvent(ev);
 }
-void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
-{
-    qDebug()<<"GraphicsView::mouseMoveEvent";
-    if(m_gScene) {
-       qDebug()<<"inside if";
-       GGraphicsItem* item = m_gScene->getCurrentItem();
-       if(item) {
-          item->changeSize(QList<QPoint>() << ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
-         // repaint(m_gScene->sceneRect().toRect());
-          //item->show();
-         //  QPainter* painter = new QPainter(this);
-         // QStyleOptionGraphicsItem* style = new QStyleOptionGraphicsItem();
-          item->update();
-          //paint(painter,style,this);
-         // QRect bRect(item->boundingRect().toRect());
-         // QPaintEvent* paintEv = new QPaintEvent(bRect);
-         // qDebug()<<"-----------Success = "<<m_gScene->sendEvent(item, paintEv);
-       }
-       //item->update(item->boundingRect());
-       //m_gScene->update(item->boundingRect());
-    }
 
-    qDebug()<<"GraphicsView::mouseMoveEvent";
-    //QGraphicsView::mouseMoveEvent(ev);
-}
 
 void GraphicsView::paintEvent(QPaintEvent* ev)
 {
