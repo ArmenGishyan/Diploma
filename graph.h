@@ -8,7 +8,9 @@
 #include <utility>
 #include <unordered_set>
 #include <iostream>
-
+#include <algorithm>
+#include <deque>
+#include <type_traits>
 
 
 
@@ -39,8 +41,9 @@ struct Node
 		std::cout << "operator == " << std::endl;
 		return true;
 	}
+
+
 	std::string name;
-	int weight;
 	T value;
 };
 
@@ -54,32 +57,54 @@ namespace std
 			std::size_t x = std::hash<std::string>{}(obj.first->getName());
 			return x;
 		}
-	};
+    };
+
+   // template <>
+   // template<class T>
+   // struct remove_reference<std::pair<Node<T>*, int>>
+   // {
+
+   //     remove_reference& operator = (const remove_reference& obj)
+   //     {
+   //        return *this;
+   //     }
+
+   // };
+
+   // template <>
+   // std::pair<Node<int>*, int>&& forward<std::pair<Node<int>*, int>&&>(std::pair<Node<int>*, int>&& param) noexcept
+   // {
+   //         return move(param);
+   // }
 }
 
 
 template<class E>
 class Graph
 {
+    typedef std::unordered_set<std::pair<Node<E>*, int> > AdjListType;
 public:
+
+    template<class T> friend class ShortestPathProblem;
 	Graph() = default;
 	Graph(int nodeCount);
 	void addNode(Node<E>*);
 	void connNodes(Node<E>*, Node<E>*, int weight = 1);
 	std::vector<Node<E>*> BFS() const;
 	std::vector<Node<E>*> DFS() const;
+    void deleteNode(const Node<E>* node, bool force = false);
 	void print() const;
 
 
 private:
-	std::vector<  std::unordered_set<  std::pair<Node<E>*, int> >  > m_adj;
+    std::deque<AdjListType> m_adj;
 };
 
 template<class T>
 void Graph<T>::addNode(Node<T>* node)
 {
-	std::unordered_set<std::pair<Node<T>*, int> >  nodeTemp; 
-	nodeTemp.insert(std::pair<Node<T>*, int> (node, 0));
+    AdjListType nodeTemp;
+    nodeTemp.insert(std::pair<Node<T>*, int> (node, 0));
 	m_adj.push_back(nodeTemp);
 }
 
@@ -173,7 +198,7 @@ std::vector<Node<T>* > Graph<T>::DFS() const
 	dfsList.push_back(m_adj[0].begin()->first);
 	visited[m_adj[0].begin()->first->getIndex()] = true;
 	int count = 0;
-	std::unordered_set<std::pair<Node<T>*, int> > current = m_adj[0];
+    AdjListType current = m_adj[0];
 
 	while (!st.empty()) 
 	{
@@ -199,5 +224,29 @@ std::vector<Node<T>* > Graph<T>::DFS() const
 		}
 	}
 	return dfsList;
+
+}
+
+template <class T>
+void Graph<T>::deleteNode(const Node<T>* node, bool force)
+{
+    for(auto i = m_adj.begin(); i != m_adj.end(); ++i)
+    {
+        if(i->begin()->first == node) {
+            m_adj.erase(i);
+            break;
+        }
+    }
+
+    for(int i = 0; i < m_adj.size(); ++i) {
+
+        auto setIt = m_adj[i].begin();
+        while (setIt != m_adj[i].end()) {
+            if(setIt->first == node) {
+                setIt = m_adj[i].erase(setIt);
+            }
+            ++setIt;
+        }
+    }
 
 }

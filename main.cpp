@@ -2,7 +2,8 @@
 #include <algorithm>
 #include <list>
 #include <QDebug>
-#include "graph.h"
+//#include "graph.h"
+#include "shortestpathproblem.h"
 
 #include "mainwindow.h"
 #include <QApplication>
@@ -41,6 +42,8 @@ int main(int argc, char *argv[])
 	obj.connNodes(cc4, cc6);
 	obj.connNodes(cc5, cc6);
 
+   // qDebug()<<ShortestPathProblem<int>::shortestPath(obj, cc1, cc2);
+
 	std::vector<Node<int>*> nodes = obj.BFS();
 	std::cout << "------------------BFS---------------------- " << std::endl;
 
@@ -54,13 +57,26 @@ int main(int argc, char *argv[])
 
 	std::cout << "\n-----------------print--------------------- " << std::endl;
 
-
-
-    qDebug()<<"vdd"<<std::numeric_limits<double>::max();
-    //QColorDialog* colorDialog = new QColorDialog;
-    //colorDialog->show();
-   // qDebug()<<"color = "<<colorDialog->currentColor();
 	obj.print();
 
+    obj.deleteNode(cc1);
+
+
+    qDebug()<<"----------------------------after delete";
+
+    std::vector<Node<int>*> nodes1 = obj.BFS();
+    std::cout << "------------------BFS---------------------- " << std::endl;
+
+    std::for_each(nodes1.begin(), nodes1.end(), [](Node<int>* it) {std::cout << "<< " << it->name; });
+    std::cout << std::endl;
+    std::vector<int> vec1;
+    std::cout << "-----------------DFS--------------------- " << std::endl;
+
+    std::vector<Node<int>*> list1 = obj.DFS();
+    std::for_each(list1.begin(), list1.end(), [](Node<int>* it) {std::cout << "<< " << it->name; });
+
+    std::cout << "\n-----------------print--------------------- " << std::endl;
+
+    obj.print();
     return a.exec();
 }
