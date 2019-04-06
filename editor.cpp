@@ -99,7 +99,11 @@ void Editor::dropEvent(QDropEvent* eve)
 // set Current QGraphics Item
 void Editor::setCurrentItem(QGraphicsItem* item)
 {
-    m_currentItem = item;
+    if(item && m_grScene) {
+        GGraphicsItem* gItem = dynamic_cast<GGraphicsItem*>(item);
+        Q_ASSERT(gItem);
+        m_grScene->setCurrentItem(gItem);
+    }
 }
 
 

@@ -25,7 +25,6 @@ public:
     void setCurrentItem(QGraphicsItem* item);
 
 private:
-      QGraphicsItem* m_currentItem;
       QPen m_pen;
       QBrush m_brush;
       GraphicsScene* m_grScene;

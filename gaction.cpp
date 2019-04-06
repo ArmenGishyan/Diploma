@@ -16,7 +16,7 @@ GRectAction::GRectAction(const QIcon &icon, const QString &text, QObject *parent
 
 QGraphicsItem* GRectAction::getObject()
 {
-    return new QGraphicsRectItem;
+    return new GGraphicsRectItem;
 }
 
 GPointAction::GPointAction(QObject* parent):GAction(parent) {}
@@ -59,7 +59,6 @@ void GPenStyle::execute(Editor* editor)
         if(editor) {
             QPen pen(editor->getPen());
             pen.setWidth(dialog->getWidth());
-            qDebug()<<"style = "<<dialog->getStyle();
             pen.setStyle(dialog->getStyle());
             editor->setPen(pen);
         }

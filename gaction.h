@@ -2,7 +2,7 @@
 #define GACTION_H
 
 #include <QAction>
-#include <ggraphicspointitem.h>
+#include <ggraphicsitems.h>
 
 class QGraphicsItem;
 class QGraphicsRectItem;
