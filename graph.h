@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <deque>
 #include <type_traits>
+#include <QDebug>
 
 
 
@@ -18,22 +19,22 @@ template<class T>
 struct Node
 {
 	Node(std::string name, T value = T(), int weight = 1) :
-		name(name), value(value)
+        m_name(name), value(value)
 	{}
 	Node() = default;
 	Node(const Node& obj) = default;
 
 	int getIndex() const
 	{
-		std::stringstream str(name);
+        std::stringstream str(m_name);
 		int x = 0;
 		str >> x;
 		
 		return x;
 	}
-	std::string getName() const
+    std::string name() const
 	{
-		return name;
+        return m_name;
 	}
 
 	bool operator == (const Node& obj)
@@ -42,8 +43,8 @@ struct Node
 		return true;
 	}
 
-
-	std::string name;
+private:
+    std::string m_name;
 	T value;
 };
 
@@ -54,7 +55,7 @@ namespace std
 	{
         size_t operator()(const std::pair<Node<int>*, int>& obj) const
 		{
-			std::size_t x = std::hash<std::string>{}(obj.first->getName());
+            std::size_t x = std::hash<std::string>{}(obj.first->name());
 			return x;
 		}
     };
@@ -82,7 +83,8 @@ namespace std
 template<class E>
 class Graph
 {
-    typedef std::unordered_set<std::pair<Node<E>*, int> > AdjListType;
+    typedef std::unordered_set<std::pair<Node<E>*, int>> AdjListType;
+    typedef std::pair<Node<E>*, AdjListType> RowType;
 public:
 
     template<class T> friend class ShortestPathProblem;
@@ -93,51 +95,55 @@ public:
 	std::vector<Node<E>*> BFS() const;
 	std::vector<Node<E>*> DFS() const;
     void deleteNode(const Node<E>* node, bool force = false);
+    std::vector<Node<E>*> getNodes() const;
 	void print() const;
 
+private:
+    std::vector<Node<E>*> getNeighbours(Node<E>* node) const;
 
 private:
-    std::deque<AdjListType> m_adj;
+    std::deque<RowType> m_adj;
 };
 
 template<class T>
 void Graph<T>::addNode(Node<T>* node)
 {
-    AdjListType nodeTemp;
-    nodeTemp.insert(std::pair<Node<T>*, int> (node, 0));
-	m_adj.push_back(nodeTemp);
+    m_adj.push_back(RowType(node, AdjListType()));
+ //   AdjListType nodeTemp;
+ //   nodeTemp.insert(std::pair<Node<T>*, int> (node, 0));
+    //m_adj.push_back(nodeTemp);
 }
 
 template<class T>
 void Graph<T>::connNodes(Node<T>* node1, Node<T>* node2, int weight)
 {
-	auto it = m_adj.begin();
-	while (it != m_adj.end()) {
-		bool flag1 = true;
-		bool flag2 = true;
-		auto itFirst = it->begin();
-		if (flag1 && (*itFirst).first->name == node1->name) {
-			it->insert(std::pair<Node<T>*, int >(node2, weight));
-			flag1 = false;
-		}
-		if (flag2 && (*itFirst).first->name == node2->name) {
-			it->insert(std::pair<Node<T>*, int >(node1, weight));
-			flag2 = false;
-		}
-		if (!flag1 && !flag2)
-			break;
-		++it;
-	}
+    auto it = m_adj.begin();
+    while (it != m_adj.end()) {
+        bool flag1 = true;
+        bool flag2 = true;
+        if (flag1 && it->first->name() == node1->name()) {
+            it->second.insert(std::pair<Node<T>*, int >(node2, weight));
+            flag1 = false;
+        }
+        if (flag2 && it->first->name() == node2->name()) {
+            it->second.insert(std::pair<Node<T>*, int >(node1, weight));
+            flag2 = false;
+        }
+        if (!flag1 && !flag2)
+            break;
+        ++it;
+    }
 }
 
 template<class T>
 void Graph<T>::print() const
 {
 	auto it = m_adj.begin();
-	while (it != m_adj.end()) {
-		auto itFirst = it->begin();
-		while (itFirst != it->end()) {
-			std::cout << itFirst->first->name << ", ";
+    while (it != m_adj.end()) {
+        std::cout << it->first->name() << ", ";
+        auto itFirst = it->second.begin();
+        while (itFirst != it->second.end()) {
+            std::cout << itFirst->first->name() << ", ";
 			itFirst++;
 		}
 		std::cout << std::endl;
@@ -158,29 +164,31 @@ Graph<T>::Graph(int nodeCount)
 template<class T>
 std::vector<Node<T>*> Graph<T>::BFS() const
 {
-	std::bitset<100> visited;
+    std::map<Node<T>*, bool> visited;
+    std::vector<Node<T>*> nodes = getNodes();
+
+    std::for_each(nodes.begin(), nodes.end(), [&visited](Node<T>* item){visited[item] = false;});
 	std::queue<Node<T>*> queue;
 	std::vector<Node<T>*> BFSnods;
 
-	auto it = m_adj.begin();
-	queue.push(it->begin()->first);
+    queue.push(m_adj.begin()->first);
 	
-	visited[0] = true;
 	while (!queue.empty()) 
 	{
 		Node<T>* node = queue.front();
 		BFSnods.push_back(node);
 		queue.pop();
-		int index = node->getIndex();
-		visited[index] = true;
-
-		for (auto const& item : m_adj[index]) {
-			if (!visited[item.first->getIndex()]) {
-				visited[item.first->getIndex()] = true;
-				queue.push(item.first);
+        visited[node] = true;
+        std::vector<Node<T>*> neighbors = getNeighbours(node);
+        for (const auto& item : neighbors) {
+            if (!visited[item]) {
+                qDebug()<<"dfvd";
+                visited[item] = true;
+                queue.push(item);
 			}
-		}
+        }
 	}
+    qDebug()<<"finish";
 	return BFSnods;
 }
 
@@ -191,24 +199,25 @@ std::vector<Node<T>* > Graph<T>::DFS() const
 	if (m_adj.empty()) {
 		return dfsList;
 	}
-	std::bitset<10> visited;
+    std::map<Node<T>*, bool> visited;
 	std::stack<Node<T>* > st;
 
-	st.push(m_adj[0].begin()->first);
-	dfsList.push_back(m_adj[0].begin()->first);
-	visited[m_adj[0].begin()->first->getIndex()] = true;
+    auto firstNode = m_adj.begin()->first;
+    st.push(firstNode);
+    dfsList.push_back(firstNode);
+    visited[firstNode] = true;
 	int count = 0;
-    AdjListType current = m_adj[0];
+    std::vector<Node<T>*> currentRow = getNeighbours(firstNode);
 
 	while (!st.empty()) 
 	{
 		count = 0;
-		for (auto it = current.begin(); it != current.end(); ++it) {
-			if (!visited[it->first->getIndex()]) {
-				visited[it->first->getIndex()] = true;
-				st.push(it->first);
-				dfsList.push_back(it->first);
-				current = m_adj[it->first->getIndex()];
+        for (const auto& it : currentRow) {
+            if (!visited[it]) {
+                visited[it] = true;
+                st.push(it);
+                dfsList.push_back(it);
+                currentRow = getNeighbours(it);
 				break;
 			}
 			else {
@@ -216,8 +225,8 @@ std::vector<Node<T>* > Graph<T>::DFS() const
 			}
 		}
 
-		if (count == current.size()) {
-			current = m_adj[st.top()->getIndex()];
+        if (count == currentRow.size()) {
+            currentRow = getNeighbours(st.top());
 			if (!st.empty()) {
 				st.pop();
 			}
@@ -230,23 +239,62 @@ std::vector<Node<T>* > Graph<T>::DFS() const
 template <class T>
 void Graph<T>::deleteNode(const Node<T>* node, bool force)
 {
+
     for(auto i = m_adj.begin(); i != m_adj.end(); ++i)
     {
-        if(i->begin()->first == node) {
-            m_adj.erase(i);
+        if(i->first == node) {
+            i = m_adj.erase(i);
             break;
         }
     }
 
     for(int i = 0; i < m_adj.size(); ++i) {
 
-        auto setIt = m_adj[i].begin();
-        while (setIt != m_adj[i].end()) {
-            if(setIt->first == node) {
-                setIt = m_adj[i].erase(setIt);
+        auto setItStart = m_adj[i].second.begin();
+        auto setItEnd = m_adj[i].second.end();
+        qDebug()<<"index = "<<i;
+        while (setItStart != m_adj[i].second.end()) {
+            if(setItStart->first->name() == node->name()) {
+                setItStart = m_adj[i].second.erase(setItStart);
+                break;
             }
-            ++setIt;
+            ++setItStart;
         }
     }
 
 }
+
+template <class T>
+std::vector<Node<T>*> Graph<T>::getNeighbours(Node<T>* node) const
+{
+    std::vector<Node<T>*> neighbours;
+
+    auto it = m_adj.begin();
+    AdjListType adjList;
+    while(it != m_adj.end()) {
+        if(it->first->name() == node->name()) {
+            adjList = it->second;
+            break;
+        }
+        ++it;
+    }
+
+    neighbours.reserve(adjList.size());
+    for(const auto& item : adjList) {
+        neighbours.push_back(item.first);
+    }
+    return neighbours;
+}
+
+template<class T>
+std::vector<Node<T>*> Graph<T>::getNodes() const
+{
+    std::vector<Node<T>*> nodes;
+    nodes.reserve(m_adj.size());
+
+    for(const RowType& item : m_adj) {
+        nodes.push_back(item.first);
+    }
+    return std::move(nodes);
+}
+
