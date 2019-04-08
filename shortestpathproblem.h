@@ -36,7 +36,7 @@ public:
     typedef   CompareNodes<NodeIntPair> Compare;
 
     ShortestPathProblem();
-    static std::vector<Node<T>*> shortestPath(Graph<T>& obj, Node<T>* start, Node<T>* end);
+    static std::vector<Node<T>*> shortestPath(Graph<T> obj, Node<T>* start, Node<T>* end);
 
 private:
     template<class EKey, class ValueType>
@@ -51,44 +51,54 @@ ShortestPathProblem<T>::ShortestPathProblem()
 }
 
 template <class T>
-std::vector<Node<T>*> ShortestPathProblem<T>::shortestPath(Graph<T>& obj, Node<T>* start, Node<T>* end)
+std::vector<Node<T>*> ShortestPathProblem<T>::shortestPath(Graph<T> obj, Node<T>* start, Node<T>* end)
 {
 
     std::map<Node<T>*, int>   pQueueValues;
-    std::vector<Node<T>*> dfs = obj.DFS();
+    auto dfsVec = obj.DFS();
+    std::list<Node<T>*> dfs(dfsVec.begin(), dfsVec.end()); //= obj.DFS();
 
     pQueueValues.insert(NodeIntPair(start,0));
     std::vector<Node<T>*> path;
 
     // assign all unvisited nodes infinite value
-    for(int i = 0; i < dfs.size()-1; ++i) {
-        if(dfs[i] != start) {
-            pQueueValues.insert(NodeIntPair(dfs[i], std::numeric_limits<int>::max()));
+    auto it = dfs.begin();
+    while(it != dfs.end()) {
+        if(*it != start) {
+            pQueueValues.insert(NodeIntPair(*it, std::numeric_limits<int>::max()));
         }
+        ++it;
     }
 
     pQueueValues.insert(NodeIntPair(start, 0));
     // the smallest weighted node in each iterartion
     Node<T>* smallWeight = start;
-    for(int i = 0; i < obj.m_adj.size(); ++i) {
-        if(obj.m_adj[i].begin()->first == smallWeight) {
-            // Current Searchable Line in Graph
-            auto searchLine = obj.m_adj[i].begin();
-            while(searchLine != obj.m_adj[i].end()) {
-                if(pQueueValues[searchLine->first] > searchLine->second) {
-                    pQueueValues[searchLine->first] = searchLine->second + pQueueValues[smallWeight];
-                }
-
-                ++searchLine;
+    while(!dfs.empty()) {
+        std::vector<std::pair<Node<T>*, int>> neighbors = obj.getNeighboursWithWeight(smallWeight);
+        auto it = neighbors.begin();
+        dfs.remove(smallWeight);
+        while(it != neighbors.end()) {
+            int newWeight = it->second+pQueueValues[smallWeight];
+            if(pQueueValues[it->first] > newWeight) {
+                pQueueValues[it->first] = newWeight;
             }
-
-            path.push_back(smallWeight);
-            obj.deleteNode(smallWeight);
+            ++it;
         }
+        std::cout<<"small weight = "<<smallWeight->name()<<std::endl;
+        auto printMap = [](std::pair<Node<T>*, int> item){std::cout<<"item = "<<item.first->name()<<", "<<item.second<<"___";};
+        std::for_each(pQueueValues.begin(),pQueueValues.end(),printMap);
+        std::cout<<std::endl;
+        pQueueValues.erase(smallWeight);
+        obj.deleteNode(smallWeight);
+        path.push_back(smallWeight);
 
         smallWeight = getSmallerValue(pQueueValues).first;
+        if(smallWeight == end) {
+            std::cout<<"Ending"<<std::endl;
+            //path.push_back(smallWeight);
+            break;
+        }
     }
-
     return path;
 }
 
@@ -97,7 +107,8 @@ template <class EKey, class ValueType>
 std::pair<EKey, ValueType> ShortestPathProblem<T>::getSmallerValue(const std::map<EKey, ValueType>& map)
 {
     std::pair<EKey, ValueType> minValuePair(nullptr, std::numeric_limits<int>::max());
-    auto findMinValue = [&minValuePair](const std::pair<EKey, ValueType>& pair) { if(pair.second > minValuePair.second)  minValuePair.second = pair.second;};
+    auto findMinValue = [&minValuePair](const std::pair<EKey, ValueType>& pair) { if(pair.second < minValuePair.second) { minValuePair.second = pair.second;
+                                                                                                                         minValuePair.first = pair.first;}};
     std::for_each(map.begin(), map.end(), findMinValue);
     return minValuePair;
 }

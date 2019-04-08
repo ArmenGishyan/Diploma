@@ -83,8 +83,11 @@ namespace std
 template<class E>
 class Graph
 {
-    typedef std::unordered_set<std::pair<Node<E>*, int>> AdjListType;
+public:
+    typedef std::pair<Node<E>*, int> NodeType;
+    typedef std::unordered_set<NodeType> AdjListType;
     typedef std::pair<Node<E>*, AdjListType> RowType;
+
 public:
 
     template<class T> friend class ShortestPathProblem;
@@ -100,6 +103,7 @@ public:
 
 private:
     std::vector<Node<E>*> getNeighbours(Node<E>* node) const;
+    std::vector<NodeType> getNeighboursWithWeight(Node<E>* node) const;
 
 private:
     std::deque<RowType> m_adj;
@@ -182,13 +186,11 @@ std::vector<Node<T>*> Graph<T>::BFS() const
         std::vector<Node<T>*> neighbors = getNeighbours(node);
         for (const auto& item : neighbors) {
             if (!visited[item]) {
-                qDebug()<<"dfvd";
                 visited[item] = true;
                 queue.push(item);
 			}
         }
 	}
-    qDebug()<<"finish";
 	return BFSnods;
 }
 
@@ -252,7 +254,6 @@ void Graph<T>::deleteNode(const Node<T>* node, bool force)
 
         auto setItStart = m_adj[i].second.begin();
         auto setItEnd = m_adj[i].second.end();
-        qDebug()<<"index = "<<i;
         while (setItStart != m_adj[i].second.end()) {
             if(setItStart->first->name() == node->name()) {
                 setItStart = m_adj[i].second.erase(setItStart);
@@ -298,3 +299,20 @@ std::vector<Node<T>*> Graph<T>::getNodes() const
     return std::move(nodes);
 }
 
+template <class T>
+std::vector<std::pair<Node<T>*,int>> Graph<T>::getNeighboursWithWeight(Node<T>* node) const
+{
+    assert(node);
+    auto it = m_adj.begin();
+    AdjListType adjList;
+    while(it != m_adj.end()) {
+        if(it->first->name() == node->name()) {
+            adjList = it->second;
+            break;
+        }
+        ++it;
+    }
+
+    std::vector<std::pair<Node<T>*, int>> neighbours(adjList.begin(),adjList.end());
+    return std::move(neighbours);
+}
