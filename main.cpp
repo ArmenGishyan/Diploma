@@ -100,5 +100,7 @@ int main(int argc, char *argv[])
 //    std::for_each(list2.begin(), list2.end(), [](Node<int>* it) {std::cout << "<< " << it->name(); });
 //
 //    std::cout << "\n-----------------print--------------------- " << std::endl;
+   // std::vector<int> vec34 = {1,2,3,4,5,6,7};
+   // std::remove(std::find(vec34.begin(), vec34.end(), 3), vec.end());
     return a.exec();
 }
