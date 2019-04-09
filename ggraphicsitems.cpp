@@ -9,6 +9,12 @@ GGraphicsItem::GGraphicsItem(QGraphicsItem * parent) : QGraphicsItem (parent)
 
 }
 
+void GGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+    qDebug()<<"GGraphicsItem::mouseMoveEvent";
+    QGraphicsItem::mouseMoveEvent(event);
+}
+
 //----------------Rect Item
 GGraphicsRectItem::GGraphicsRectItem(QGraphicsItem* parent):GGraphicsItem (parent)
 {
@@ -50,6 +56,7 @@ void GGraphicsRectItem::changeSize(const QList<QPoint>& points)
 void GGraphicsRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     qDebug()<<"GGraphicsRectItem::mouseMoveEvent";
+    QGraphicsItem::mouseMoveEvent(event);
 }
 
 bool GGraphicsRectItem::sceneEvent(QEvent* event)
@@ -64,7 +71,8 @@ bool GGraphicsRectItem::sceneEvent(QEvent* event)
     }
 
 }
-//---------------------Point Item
+
+//--------------------------------Point Item---------------------------------------
 GGraphicsPointItem::GGraphicsPointItem(QGraphicsItem* parent) : GGraphicsItem (parent)
 {
 
@@ -79,4 +87,17 @@ GGraphicsPointItem* GGraphicsPointItem::create()
 void GGraphicsPointItem::changeSize(const QList<QPoint>& points)
 {
 
+}
+
+//----------------------------------------------temporary item
+RectItem::RectItem(QGraphicsItem* parent) : QGraphicsRectItem (parent)
+{
+    m_textItem = new QGraphicsTextItem(this);
+}
+
+void RectItem::reDrawCoordinate()
+{
+    QPoint point = rect().bottomRight().toPoint();
+    m_textItem->setHtml(QString::number((point.x())) + ", " + QString::number(point.y()));
+    m_textItem->setPos(point);
 }

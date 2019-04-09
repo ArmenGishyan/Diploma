@@ -5,7 +5,9 @@
 #include <QDebug>
 #include <QIcon>
 #include <QToolButton>
-#include <editor.h>
+#include "editor.h"
+#include "dockwidgets.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -20,7 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
     initEditor();
     setCentralWidget(m_editor);
 
-    //
+    //create Command Line
+    createCommandLineDockW();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -110,4 +115,11 @@ void MainWindow::styleActionClicked(QAction* action)
     if(styleAction) {
         styleAction->execute(m_editor);
     }
+}
+
+void MainWindow::createCommandLineDockW()
+{
+    m_commandLine = new CommandLineGui(this);
+    m_commandLine->setFixedHeight(100);
+    addDockWidget(Qt::BottomDockWidgetArea, m_commandLine);
 }

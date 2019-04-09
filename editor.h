@@ -6,6 +6,8 @@
 
 #include "graphicsview.h"
 
+class QGraphicsRectItem;
+
 class Editor : public QWidget
 {
 public:
@@ -18,6 +20,8 @@ public:
     void dropEvent(QDropEvent* event) override;
     void setPen(QPen pen) {m_pen = pen;}
     void setBrush(QBrush brush) {m_brush = brush;}
+    template<class T>
+    QList<T> getShapeItems() const;
     QPen getPen() const {return m_pen;}
     QBrush getBrush() const {return m_brush;}
 

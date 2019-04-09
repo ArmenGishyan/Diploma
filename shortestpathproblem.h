@@ -123,32 +123,17 @@ std::vector<Node<T>*> ShortestPathProblem<T>::shortestPath(Graph<T> obj, Node<T>
             }
             ++it;
         }
-        std::cout<<"small weight = "<<smallWeight->name()<<std::endl;
-       // auto printMap = [](std::pair<Node<T>*, int> item){std::cout<<"item = "<<item.first->name()<<", "<<item.second<<"___";};
-       // std::for_each(pQueueValues.begin(),pQueueValues.end(), printMap);
-        std::cout<<std::endl;
-
         Node<T>* smallerPrev = pQueueValues[smallWeight].prev();
         pQueueValues[smallWeight].setWeight(std::numeric_limits<int>::max());
         obj.deleteNode(smallWeight);
 
         smallWeight = getSmallerValue(pQueueValues).first;
-       // auto newStart = std::find(path.begin(), path.end(), smallerPrev);
-       // if(newStart != path.end()) {
-       //     path.erase(++newStart, path.end());
-       //     qDebug()<<"ERROR";
-       // }
-       // path.push_back(smallWeight);
         if(smallWeight == end) {
-            std::cout<<"Ending"<<std::endl;
-         //   path.push_back(pQueueValues[smallWeight].prev());
-         //   path.push_back(smallWeight);
             break;
         }
     }
-    std::cout<<"End.............."<<std::endl;
+
     path = getPathFromMap(pQueueValues, start, end);
-    std::reverse(path.begin(), path.end());
     return path;
 }
 
@@ -177,6 +162,7 @@ std::vector<Node<T>*> ShortestPathProblem<T>::getPathFromMap(const std::map<Node
         findNode = walk->second.prev();
 
     }
+    std::reverse(path.begin(), path.end());
     return path;
 }
 #endif // SHORTESTPATHPROBLEM_H

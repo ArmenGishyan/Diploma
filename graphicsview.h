@@ -18,8 +18,6 @@
 
 #include "ggraphicsitems.h"
 
-class RectItem;
-
 class GraphicsScene : public QGraphicsScene
 {
   public:
@@ -65,17 +63,6 @@ private:
     GraphicsScene* m_gScene;
 };
 
-class RectItem : public QGraphicsRectItem
-{
-public:
-   RectItem(QGraphicsItem* parent = nullptr);
-   QGraphicsTextItem* getTextItem(){return m_textItem;}
-   void reDrawCoordinate();
-   void setTextPos(const QPoint&);
-
-private:
-    QGraphicsTextItem* m_textItem;
-};
 
 
 

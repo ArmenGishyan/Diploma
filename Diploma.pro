@@ -35,6 +35,7 @@ SOURCES += \
     gstyledialog.cpp \
     ggraphicsshapesitem.cpp \
     ggraphicsitems.cpp \
+    dockwidgets.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +50,8 @@ HEADERS += \
     gstyledialog.h \
     shortestpathproblem.h \
     ggraphicsshapesitem.h \
-    ggraphicsitems.h
+    ggraphicsitems.h \
+    dockwidgets.h
 
 FORMS += \
         mainwindow.ui

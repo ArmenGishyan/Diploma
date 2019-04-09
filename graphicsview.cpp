@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <QRect>
-#include <QGraphicsRectItem>
+#include <QGraphicsItem>
 #include <QGridLayout>
 #include <QApplication>
 #include <QTableWidget>
@@ -14,7 +14,11 @@
 
 GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView (gScene, parent)
 {
-    this->setSceneRect(QRectF(0,0,1000, 1000));
+    if(parent != nullptr) {
+        this->setSceneRect(QRectF(parent->rect()));
+    } else {
+        this->setSceneRect(QRectF(0, 0, 1000, 1000));
+    }
     setBackgroundBrush(QBrush(Qt::red, Qt::SolidPattern));
 
     m_rect = nullptr;
@@ -74,7 +78,6 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
 
 void GraphicsView::paintEvent(QPaintEvent* ev)
 {
-    qDebug()<<"GraphicsView paint event";
     qDebug()<<"--------------------------------------------------------------GraphicsView paint event";
     QGraphicsView::paintEvent(ev);
 }
@@ -123,15 +126,4 @@ void GraphicsScene::drawCoordinateLines()
     addLine(10,0,10,100, QPen(QBrush(Qt::green),10));
 }
 
-RectItem::RectItem(QGraphicsItem* parent) : QGraphicsRectItem (parent)
-{
-    m_textItem = new QGraphicsTextItem(this);
-}
-
-void RectItem::reDrawCoordinate()
-{
-    QPoint point = rect().bottomRight().toPoint();
-    m_textItem->setHtml(QString::number((point.x())) + ", " + QString::number(point.y()));
-    m_textItem->setPos(point);
-}
 

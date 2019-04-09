@@ -17,7 +17,7 @@ Editor::Editor(QWidget* parent):QWidget (parent)
     m_pen = QPen();
     m_brush = QBrush();
 
-    setFixedSize(1500, 800);
+    //setFixedSize(, 1000);
     m_grScene  = new GraphicsScene(this);
     m_grView = new GraphicsView(m_grScene);
     QHBoxLayout* lay = new QHBoxLayout;;
@@ -104,6 +104,26 @@ void Editor::setCurrentItem(QGraphicsItem* item)
         Q_ASSERT(gItem);
         m_grScene->setCurrentItem(gItem);
     }
+}
+
+//get Rectangles from GraphicsScene
+template <class T>
+QList<T> Editor::getShapeItems() const
+{
+    QList<QGraphicsItem*> items;
+    QList<T> shapeItems;
+    if(m_grScene) {
+        items = m_grScene->items();
+    }
+
+    T shape;
+    for(const QGraphicsItem* it : items) {
+        shape = qgraphicsitem_cast<T>(it);
+        if(shape != nullptr) {
+            shapeItems.append(shape);
+        }
+    }
+    return shapeItems;
 }
 
 

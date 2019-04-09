@@ -10,6 +10,7 @@ class MainWindow;
 
 class QToolButton;
 class Editor;
+class CommandLineGui;
 
 class MainWindow : public QMainWindow
 {
@@ -26,6 +27,7 @@ private:
     void createDrawMenu();
     void createHelpMenu();
     void createStyleToolBar();
+    void createCommandLineDockW();
     void initEditor();
 
 public slots:
@@ -49,7 +51,7 @@ private:
     QAction* m_fillSelection;
     QAction* m_selectColor;
     Editor* m_editor;
-
+    CommandLineGui* m_commandLine;
 
 };
 
