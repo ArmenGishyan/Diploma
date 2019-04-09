@@ -75,6 +75,7 @@ public:
 
     ShortestPathProblem();
     static std::vector<Node<T>*> shortestPath(Graph<T> obj, Node<T>* start, Node<T>* end);
+    static std::vector<Node<T>*> getPathFromMap(const std::map<Node<T>*, PreviousWeight<T>>& map, Node<T>* start, Node<T>* end);
 
 private:
     template<class EKey, class ValueType>
@@ -96,6 +97,7 @@ std::vector<Node<T>*> ShortestPathProblem<T>::shortestPath(Graph<T> obj, Node<T>
     auto dfsVec = obj.DFS();
     std::list<Node<T>*> dfs(dfsVec.begin(), dfsVec.end()); //= obj.DFS();
     std::vector<Node<T>*> path;
+    path.push_back(start);
 
     // assign all unvisited nodes infinite value
     auto it = dfs.begin();
@@ -125,20 +127,28 @@ std::vector<Node<T>*> ShortestPathProblem<T>::shortestPath(Graph<T> obj, Node<T>
        // auto printMap = [](std::pair<Node<T>*, int> item){std::cout<<"item = "<<item.first->name()<<", "<<item.second<<"___";};
        // std::for_each(pQueueValues.begin(),pQueueValues.end(), printMap);
         std::cout<<std::endl;
-        auto newStart = std::find(path.begin(), path.end(), smallWeight);
-        path.erase(newStart, path.end());
-        path.push_back(pQueueValues[smallWeight].prev());
 
-        pQueueValues.erase(smallWeight);
+        Node<T>* smallerPrev = pQueueValues[smallWeight].prev();
+        pQueueValues[smallWeight].setWeight(std::numeric_limits<int>::max());
         obj.deleteNode(smallWeight);
 
         smallWeight = getSmallerValue(pQueueValues).first;
+       // auto newStart = std::find(path.begin(), path.end(), smallerPrev);
+       // if(newStart != path.end()) {
+       //     path.erase(++newStart, path.end());
+       //     qDebug()<<"ERROR";
+       // }
+       // path.push_back(smallWeight);
         if(smallWeight == end) {
             std::cout<<"Ending"<<std::endl;
-            path.push_back(pQueueValues[smallWeight].prev());
+         //   path.push_back(pQueueValues[smallWeight].prev());
+         //   path.push_back(smallWeight);
             break;
         }
     }
+    std::cout<<"End.............."<<std::endl;
+    path = getPathFromMap(pQueueValues, start, end);
+    std::reverse(path.begin(), path.end());
     return path;
 }
 
@@ -153,4 +163,20 @@ std::pair<EKey, ValueType> ShortestPathProblem<T>::getSmallerValue(const std::ma
     return minValuePair;
 }
 
+template <class T>
+std::vector<Node<T>*> ShortestPathProblem<T>::getPathFromMap(const std::map<Node<T>*, PreviousWeight<T>>& map, Node<T>* start, Node<T>* end)
+{
+    std::vector<Node<T>*> path;
+
+    Node<T>* findNode =  end;
+    while(true) {
+        path.push_back(findNode);
+        if(findNode == start)
+            break;
+        auto walk = map.find(findNode);
+        findNode = walk->second.prev();
+
+    }
+    return path;
+}
 #endif // SHORTESTPATHPROBLEM_H

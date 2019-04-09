@@ -21,19 +21,30 @@ int main(int argc, char *argv[])
     Node<int>* ccB = new Node<int>("B");
     Node<int>* ccC = new Node<int>("C");
     Node<int>* ccD = new Node<int>("D");
+    Node<int>* ccE = new Node<int>("E");
+    Node<int>* ccF = new Node<int>("F");
+    Node<int>* ccX = new Node<int>("X");
+    Node<int>* ccY = new Node<int>("Y");
 
     obj.addNode(ccA);
     obj.addNode(ccB);
     obj.addNode(ccC);
     obj.addNode(ccD);
-//	obj.addNode(cc5);
-//	obj.addNode(cc6);
+    obj.addNode(ccE);
+    obj.addNode(ccF);
+    obj.addNode(ccX);
+    obj.addNode(ccY);
 
-    obj.connNodes(ccA, ccC, 10);
     obj.connNodes(ccA, ccB, 1);
-    obj.connNodes(ccA, ccD, 20);
-    obj.connNodes(ccB, ccD, 10);
-    obj.connNodes(ccC, ccD, 100);
+    obj.connNodes(ccB, ccC, 1);
+    obj.connNodes(ccC, ccD, 1);
+    obj.connNodes(ccD, ccE, 1);
+    obj.connNodes(ccE, ccF, 1);
+    obj.connNodes(ccA, ccX, 2);
+    obj.connNodes(ccX, ccY, 2);
+    obj.connNodes(ccY, ccF, 2);
+    //obj.connNodes(ccA, ccF, 1);
+
 
 //	Node<int>* cc5 = new Node<int>("4");
 //	Node<int>* cc6 = new Node<int>("5");
@@ -56,7 +67,7 @@ int main(int argc, char *argv[])
    // obj.connNodes(cc4, cc6);
    // obj.connNodes(cc5, cc6);
 
-    std::vector<Node<int>*> shortVec = ShortestPathProblem<int>::shortestPath(obj, ccA, ccD);
+    std::vector<Node<int>*> shortVec = ShortestPathProblem<int>::shortestPath(obj, ccA, ccF);
     std::cout << "------------------Shortest Path---------------------- " << std::endl;
 
     std::for_each(shortVec.begin(), shortVec.end(), [](Node<int>* it) {std::cout << "<< " << it->name(); });
