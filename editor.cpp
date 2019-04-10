@@ -36,6 +36,7 @@ void Editor::paintEvent(QPaintEvent* p)
     painter.setFont(QFont("Arial", 30));
     painter.drawText(rect(), Qt::AlignCenter, "Qt");
     qDebug()<<"paint event";
+    m_grScene->update(this->rect());
     QWidget::paintEvent(p);
 }
 

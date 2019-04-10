@@ -4,7 +4,7 @@
 #include <QApplication>
 
 //-----------------Base Graphics Item
-GGraphicsItem::GGraphicsItem(QGraphicsItem * parent) : QGraphicsItem (parent)
+GGraphicsItem::GGraphicsItem(QGraphicsItem * parent) : QAbstractGraphicsShapeItem(parent)
 {
 
 }
@@ -19,6 +19,7 @@ void GGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 GGraphicsRectItem::GGraphicsRectItem(QGraphicsItem* parent):GGraphicsItem (parent)
 {
     m_rect = QRect();
+    show();
 }
 
 GGraphicsRectItem* GGraphicsRectItem::create()
@@ -29,10 +30,11 @@ GGraphicsRectItem* GGraphicsRectItem::create()
 
 QRectF GGraphicsRectItem::boundingRect() const
 {
-    qDebug()<<"bounding rect";
-    int x1, x2, y1, y2;
-    m_rect.getCoords(&x1,&y2,&x2,&y2);
-    return QRect(QPoint(x1+1,y1+1),QPoint(x2+1,y2+1));
+    qDebug()<<"GGraphicsRectItem::boundingRect";
+    QPoint leftTop = m_rect.topLeft();
+    QPoint bottomRight = m_rect.bottomRight();
+
+    return QRectF((leftTop+QPoint(-1, 1)), bottomRight + QPoint(1, 1));
 }
 
 void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
@@ -53,24 +55,24 @@ void GGraphicsRectItem::changeSize(const QList<QPoint>& points)
     }
 }
 
-void GGraphicsRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
-{
-    qDebug()<<"GGraphicsRectItem::mouseMoveEvent";
-    QGraphicsItem::mouseMoveEvent(event);
-}
+//void GGraphicsRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+//{
+//    qDebug()<<"GGraphicsRectItem::mouseMoveEvent";
+//    QGraphicsItem::mouseMoveEvent(event);
+//}
 
-bool GGraphicsRectItem::sceneEvent(QEvent* event)
-{
-    qDebug()<<"---------------GGraphicsRectItem::sceneEvent";
-    if(event->type() == QEvent::MouseMove) {
-        qDebug()<<"MouseMove";
-    }
-    if(event->type() == QEvent::Paint)
-    {
-        qDebug()<<"Paint Eventnvdfvdbfvd";
-    }
-
-}
+//bool GGraphicsRectItem::sceneEvent(QEvent* event)
+//{
+//    qDebug()<<"---------------GGraphicsRectItem::sceneEvent";
+//    if(event->type() == QEvent::MouseMove) {
+//        qDebug()<<"MouseMove";
+//    }
+//    if(event->type() == QEvent::Paint)
+//    {
+//        qDebug()<<"Paint Eventnvdfvdbfvd";
+//    }
+//
+//}
 
 //--------------------------------Point Item---------------------------------------
 GGraphicsPointItem::GGraphicsPointItem(QGraphicsItem* parent) : GGraphicsItem (parent)
@@ -89,15 +91,34 @@ void GGraphicsPointItem::changeSize(const QList<QPoint>& points)
 
 }
 
-//----------------------------------------------temporary item
-RectItem::RectItem(QGraphicsItem* parent) : QGraphicsRectItem (parent)
+//----------------------------------------------temporary item-------------------------------
+GRectItem::GRectItem(QGraphicsItem* parent) : QGraphicsRectItem (parent)
 {
     m_textItem = new QGraphicsTextItem(this);
 }
 
-void RectItem::reDrawCoordinate()
+void GRectItem::reDrawCoordinate()
 {
     QPoint point = rect().bottomRight().toPoint();
     m_textItem->setHtml(QString::number((point.x())) + ", " + QString::number(point.y()));
     m_textItem->setPos(point);
+}
+
+void GRectItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    qDebug()<<"--------------------------------------GRectPaint------------------------";
+    painter->drawRect(this->rect());
+    painter->drawText(this->rect().topLeft(), QString("Armen"));
+}
+
+
+QRectF GRectItem::boundingRect() const
+{
+    qDebug()<<"bounding rect GRectItem";
+    QRect rect = this->rect().toRect();
+
+    QPoint leftTop = rect.topLeft();
+    QPoint bottomRight = rect.bottomRight();
+
+    return QRectF((leftTop+QPoint(-1, 1)), bottomRight + QPoint(1, 1));
 }

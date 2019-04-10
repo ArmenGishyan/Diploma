@@ -7,6 +7,7 @@
 #include <QToolButton>
 #include "editor.h"
 #include "dockwidgets.h"
+#include "engine.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -24,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //create Command Line
     createCommandLineDockW();
+
+    // create Action ToolBar
+    createActionToolBar();
 
 
 }
@@ -123,3 +127,25 @@ void MainWindow::createCommandLineDockW()
     m_commandLine->setFixedHeight(100);
     addDockWidget(Qt::BottomDockWidgetArea, m_commandLine);
 }
+
+void MainWindow::createActionToolBar()
+{
+    m_actionToolBar = new QToolBar(this);
+
+    m_getShortPath = new QAction("get Shortest Path");
+    m_getShortPath->setIcon(QIcon(":/Icons/shortPath.png"));
+    m_actionToolBar->addAction(m_getShortPath);
+
+    addToolBar(Qt::LeftToolBarArea, m_actionToolBar);
+    qDebug()<<"result = "<<connect(m_getShortPath, SIGNAL(triggered(bool)), this, SLOT(handleshortedPathAction()));
+}
+
+void MainWindow::handleshortedPathAction()
+{
+    qDebug()<<"handleshortedPathAction";
+    if(m_engine) {
+        auto rects = m_engine->getRectangles();
+        int x = 0;
+    }
+}
+

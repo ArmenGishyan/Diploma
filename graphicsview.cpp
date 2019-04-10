@@ -33,7 +33,7 @@ GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
 {
-    QGraphicsRectItem* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(m_rect);
+    GGraphicsRectItem* rectItem = qgraphicsitem_cast<GGraphicsRectItem*>(m_rect);
     if(rectItem) {
        QRectF rect = rectItem->rect();// m_items.top()->rect();
        rect.setBottomRight(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
@@ -47,8 +47,8 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
 }
 void GraphicsView::mousePressEvent(QMouseEvent* ev)
 {
-    m_rect = new QGraphicsRectItem;
-    QGraphicsRectItem* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(m_rect);
+    m_rect = new GGraphicsRectItem;
+    GGraphicsRectItem* rectItem = qgraphicsitem_cast<GGraphicsRectItem*>(m_rect);
     if(rectItem) {
         QPoint pos = ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value());
         QRectF rect(pos,pos);
@@ -61,11 +61,12 @@ void GraphicsView::mousePressEvent(QMouseEvent* ev)
 }
 void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
 {
-    QGraphicsRectItem* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(m_rect);
+    GGraphicsRectItem* rectItem = qgraphicsitem_cast<GGraphicsRectItem*>(m_rect);
     if(rectItem) {
        QRectF rect = rectItem->rect();
        rect.setBottomRight(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
        rectItem->setRect(rect);
+       //rectItem->reDrawCoordinate();
 
         if(m_gScene && ev->button() == Qt::RightButton) {
             m_gScene->addItem(rectItem);

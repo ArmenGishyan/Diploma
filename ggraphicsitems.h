@@ -2,11 +2,12 @@
 #define GGRAPHICSITEMS_H
 
 #include <QGraphicsItem>
+
 #include <QPoint>
 #include <QDebug>
 
 // Base class all Graphics Item
-class GGraphicsItem : public QGraphicsItem
+class GGraphicsItem : public QAbstractGraphicsShapeItem
 {
 public:
     GGraphicsItem(QGraphicsItem * parent = 0);
@@ -24,8 +25,8 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr) override;
     void changeSize(const QList<QPoint>& points) override;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent * event) override;
-    bool sceneEvent(QEvent *event) override;
+   // void mouseMoveEvent(QGraphicsSceneMouseEvent * event) override;
+    //bool sceneEvent(QEvent *event) override;
     QRectF rect() const {return m_rect;}
     void setRect(QRectF rect) {m_rect = rect.toRect();}
     QPainterPath shape() const override
@@ -65,13 +66,16 @@ private:
 
 
 //temporary item
-class RectItem : public QGraphicsRectItem
+class GRectItem : public QGraphicsRectItem
 {
 public:
-   RectItem(QGraphicsItem* parent = nullptr);
+   GRectItem(QGraphicsItem* parent = nullptr);
    QGraphicsTextItem* getTextItem(){return m_textItem;}
    void reDrawCoordinate();
    void setTextPos(const QPoint&);
+   void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+   QRectF boundingRect() const override;
+
 
 private:
     QGraphicsTextItem* m_textItem;

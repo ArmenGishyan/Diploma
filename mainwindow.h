@@ -11,6 +11,7 @@ class MainWindow;
 class QToolButton;
 class Editor;
 class CommandLineGui;
+class Engine;
 
 class MainWindow : public QMainWindow
 {
@@ -21,7 +22,8 @@ public:
     ~MainWindow();
 
 // public methods
-const Editor* getEditor() const {return m_editor;}
+    const Editor* getEditor() const {return m_editor;}
+    void initEngine(Engine* engine) {m_engine = engine;}
 
 private:
     void createToolBar();
@@ -31,12 +33,14 @@ private:
     void createHelpMenu();
     void createStyleToolBar();
     void createCommandLineDockW();
+    void createActionToolBar();
     void initEditor();
 
 
 public slots:
     void actionClicked(QAction*);
     void styleActionClicked(QAction*);
+    void handleshortedPathAction();
 
   //  void handleDrawRect();
   //  void handleDrawLine();
@@ -46,6 +50,7 @@ private:
     Ui::MainWindow *ui;
     QToolBar* m_mainToolBar;
     QToolBar* m_styleToolBar;
+    QToolBar* m_actionToolBar;
     QMenuBar* m_menuBar;
     QMenu* m_fileMenu;
     QMenu* m_drawMenu;
@@ -55,9 +60,10 @@ private:
     QAction* m_drawPoint;
     QAction* m_fillSelection;
     QAction* m_selectColor;
+    QAction* m_getShortPath;
     Editor* m_editor;
     CommandLineGui* m_commandLine;
-
+    Engine* m_engine;
 };
 
 #endif // MAINWINDOW_H
