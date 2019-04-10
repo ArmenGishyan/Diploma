@@ -18,9 +18,9 @@ std::vector<Rectangle> Engine::getRectangles() const
    const Editor* editor = m_mainWindow ? m_mainWindow->getEditor() : nullptr;
 
    std::vector<Rectangle> rectVector;
-   QList<GRectItem*> rectItems;
+   QList<GGraphicsRectItem*> rectItems;
    if(editor) {
-       rectItems = editor->getShapeItems<GRectItem*>();
+       rectItems = editor->getShapeItems<GGraphicsRectItem*>();
        auto text = editor->getShapeItems<QGraphicsTextItem*>();
        int x = 10;
        ++x;
