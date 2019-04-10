@@ -23,35 +23,34 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
+    main.cpp \
+    engine.cpp \
+    mainwindow.cpp \
+    polygons.cpp \
     command.cpp \
     graph.cpp \
-    point.cpp \
-    polygons.cpp \
     editor.cpp \
     graphicsview.cpp \
     gaction.cpp \
     gstyledialog.cpp \
     ggraphicsshapesitem.cpp \
     ggraphicsitems.cpp \
-    dockwidgets.cpp
+    dockwidgets.cpp \
 
 HEADERS += \
-        mainwindow.h \
+    engine.h \
+    mainwindow.h \
+    polygons.h \
+    editor.h \
     command.h \
     graph.h \
-    point.h \
-    polygons.h \
-    shape.h \
-    editor.h \
     graphicsview.h \
     gaction.h \
     gstyledialog.h \
     shortestpathproblem.h \
     ggraphicsshapesitem.h \
     ggraphicsitems.h \
-    dockwidgets.h
+    dockwidgets.h \
 
 FORMS += \
         mainwindow.ui

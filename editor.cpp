@@ -106,24 +106,4 @@ void Editor::setCurrentItem(QGraphicsItem* item)
     }
 }
 
-//get Rectangles from GraphicsScene
-template <class T>
-QList<T> Editor::getShapeItems() const
-{
-    QList<QGraphicsItem*> items;
-    QList<T> shapeItems;
-    if(m_grScene) {
-        items = m_grScene->items();
-    }
-
-    T shape;
-    for(const QGraphicsItem* it : items) {
-        shape = qgraphicsitem_cast<T>(it);
-        if(shape != nullptr) {
-            shapeItems.append(shape);
-        }
-    }
-    return shapeItems;
-}
-
 

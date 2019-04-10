@@ -35,4 +35,23 @@ private:
       GraphicsView* m_grView;
 };
 
+//get Rectangles from GraphicsScene
+template <class T>
+QList<T> Editor::getShapeItems() const
+{
+    QList<QGraphicsItem*> items;
+    QList<T> shapeItems;
+    if(m_grScene) {
+        items = m_grScene->items();
+    }
+
+    T shape;
+    for(QGraphicsItem* it : items) {
+        shape = qgraphicsitem_cast<T>(it);
+        if(shape != nullptr) {
+            shapeItems.append(shape);
+        }
+    }
+    return shapeItems;
+}
 #endif // COORDINATESYSTEM_H

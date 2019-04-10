@@ -4,6 +4,7 @@
 #include <QDebug>
 //#include "graph.h"
 #include "shortestpathproblem.h"
+#include "engine.h"
 
 #include "mainwindow.h"
 #include <QApplication>
@@ -13,8 +14,10 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    Engine engine;
+    engine.createGraph<int>();
+   // MainWindow w;
+   // w.show();
 
 	Graph<int> obj;
     Node<int>* ccA = new Node<int>("A");

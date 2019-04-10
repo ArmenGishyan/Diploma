@@ -20,6 +20,9 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+// public methods
+const Editor* getEditor() const {return m_editor;}
+
 private:
     void createToolBar();
     void createMenuBar();
@@ -30,9 +33,11 @@ private:
     void createCommandLineDockW();
     void initEditor();
 
+
 public slots:
     void actionClicked(QAction*);
     void styleActionClicked(QAction*);
+
   //  void handleDrawRect();
   //  void handleDrawLine();
   //  void handleDrawPoint();
