@@ -14,28 +14,18 @@ GRectAction::GRectAction(QObject* parent):GAction(parent) {}
 GRectAction::GRectAction(const QString &text, QObject *parent): GAction (text, parent) {}
 GRectAction::GRectAction(const QIcon &icon, const QString &text, QObject *parent):GAction(icon,text,parent) {}
 
-QGraphicsItem* GRectAction::getObject()
+GGraphicsItem* GRectAction::getObject()
 {
     return new GGraphicsRectItem;
 }
 
-GPointAction::GPointAction(QObject* parent):GAction(parent) {}
-GPointAction::GPointAction(const QString &text, QObject *parent): GAction (text, parent) {}
-GPointAction::GPointAction(const QIcon &icon, const QString &text, QObject *parent):GAction(icon,text,parent) {}
+GLineAction::GLineAction(QObject* parent):GAction(parent) {}
+GLineAction::GLineAction(const QString &text, QObject *parent): GAction (text, parent) {}
+GLineAction::GLineAction(const QIcon &icon, const QString &text, QObject *parent):GAction(icon,text,parent) {}
 
-QGraphicsItem* GPointAction::getObject()
+GGraphicsItem* GLineAction::getObject()
 {
-    return nullptr;//new GGraphicsPointItem;
-}
-
-QRectF GGraphicsPointItem::boundingRect() const
-{
-
-}
-
-void GGraphicsPointItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-
+    return new GGraphicsLineItem;
 }
 
 

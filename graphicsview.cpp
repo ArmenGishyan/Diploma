@@ -19,9 +19,10 @@ GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView
     } else {
         this->setSceneRect(QRectF(0, 0, 1000, 1000));
     }
-    setBackgroundBrush(QBrush(Qt::red, Qt::SolidPattern));
+    setBackgroundBrush(QBrush(Qt::darkBlue, Qt::SolidPattern));
 
-    m_rect = nullptr;
+    m_currentItem = nullptr;
+    m_drawableItem = nullptr;
 
     setMouseTracking(true);
 
@@ -33,13 +34,11 @@ GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
 {
-    GGraphicsRectItem* rectItem = qgraphicsitem_cast<GGraphicsRectItem*>(m_rect);
-    if(rectItem) {
-       QRectF rect = rectItem->rect();// m_items.top()->rect();
-       rect.setBottomRight(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
-       rectItem->setRect(rect);
-       m_rect = nullptr;
-       update();
+    if(m_drawableItem && ev->buttons() == Qt::LeftButton) {
+
+        m_drawableItem->setEndPoint(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+        m_drawableItem = nullptr;
+        update();
     }
 
     qDebug()<<"GraphicsView::mouseReleaseEvent size = "<<items().size();
@@ -47,32 +46,28 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
 }
 void GraphicsView::mousePressEvent(QMouseEvent* ev)
 {
-    m_rect = new GGraphicsRectItem;
-    GGraphicsRectItem* rectItem = qgraphicsitem_cast<GGraphicsRectItem*>(m_rect);
-    if(rectItem) {
-        QPoint pos = ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value());
-        QRectF rect(pos,pos);
-        rectItem->setRect(rect);
-        m_gScene->addItem(m_rect);
+    qDebug()<<"Current item = "<<m_currentItem;
+    if(m_currentItem && ev->buttons() == Qt::LeftButton) {
+        m_drawableItem = m_currentItem->create(); // = new GGraphicsRectItem;
+        m_drawableItem->setStartPoint(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+        if(m_gScene) {
+            m_gScene->addItem(m_drawableItem);
+        }
     }
+
 
     qDebug()<<"GraphicsView::mousePressEvent";
     QGraphicsView::mousePressEvent(ev);
 }
 void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
 {
-    GGraphicsRectItem* rectItem = qgraphicsitem_cast<GGraphicsRectItem*>(m_rect);
-    if(rectItem) {
-       QRectF rect = rectItem->rect();
-       rect.setBottomRight(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
-       rectItem->setRect(rect);
-       //rectItem->reDrawCoordinate();
-
-        if(m_gScene && ev->button() == Qt::RightButton) {
-            m_gScene->addItem(rectItem);
-        }
+    if(m_drawableItem && ev->buttons() == Qt::LeftButton) {
+        qDebug()<<"inside if";
+        QPoint point = (ev->pos()); // + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+        QList<QPoint> itemsList;
+        itemsList << point;
+        m_drawableItem->changeSize(ev->pos());
         update();
-    //QGraphicsView::mouseReleaseEvent(ev);
     }
 }
 
@@ -83,11 +78,23 @@ void GraphicsView::paintEvent(QPaintEvent* ev)
     QGraphicsView::paintEvent(ev);
 }
 
+GGraphicsItem* GraphicsView::getCurrentItem() const
+{
+    return m_currentItem;
+}
+
+void GraphicsView::setCurrentItem(GGraphicsItem* item)
+{
+    qDebug()<<"GraphicsScene::setCurrentItem";
+    delete m_currentItem;
+    m_currentItem = item;
+}
+
+//---------------------------------------------------------------------GGraphicsScene----------------
 GraphicsScene::GraphicsScene(QObject* parent):QGraphicsScene (parent)
 {
     drawCoordinateLines();
 }
-
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
@@ -106,16 +113,6 @@ QVector<QRect> GraphicsScene::getRects() const
     QList<QGraphicsItem*> rects = items();
 }
 
-GGraphicsItem* GraphicsScene::getCurrentItem() const
-{
-    return m_currentItem;
-}
-
-void GraphicsScene::setCurrentItem(GGraphicsItem* item)
-{
-    qDebug()<<"GraphicsScene::setCurrentItem";
-    m_currentItem = item;
-}
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {

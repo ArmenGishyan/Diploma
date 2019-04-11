@@ -35,24 +35,28 @@ void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem
 {
     qDebug()<<"-------------------GGraphicsRectItem::paint";
     painter->drawRect(m_rect);
-    //GGraphicsItem::paint(painter,option,widget);
 }
 
-void GGraphicsRectItem::changeSize(const QList<QPoint>& points)
+
+void GGraphicsRectItem::changeSize(const QPoint& points)
 {
     qDebug()<<"-------------------GGraphicsRectItem::changeSize";
-    if(!points.empty()) {
-        QPoint newPoint = m_rect.bottomRight()+points[0];
-        qDebug() << points[0];
-        m_rect.setBottomRight(newPoint);
-    }
+    m_rect.setBottomRight(points);
 }
 
+void GGraphicsRectItem::setStartPoint(const QPoint& point)
+{
+    m_rect = QRect(point, point);
+}
+void GGraphicsRectItem::setEndPoint(const QPoint& point)
+{
+    m_rect.setBottomRight(point);
+}
 
 //--------------------------------Point Item---------------------------------------
 GGraphicsPointItem::GGraphicsPointItem(QGraphicsItem* parent) : GGraphicsItem (parent)
 {
-
+    m_point = QPoint();
 }
 
 
@@ -61,8 +65,66 @@ GGraphicsPointItem* GGraphicsPointItem::create()
     return new GGraphicsPointItem;
 }
 
-void GGraphicsPointItem::changeSize(const QList<QPoint>& points)
+void GGraphicsPointItem::changeSize(const QPoint& points)
 {
-
+    return;
 }
+
+void GGraphicsPointItem::setStartPoint(const QPoint& point)
+{
+    m_point = point;
+}
+
+void GGraphicsPointItem::setEndPoint(const QPoint& point)
+{
+    return;
+}
+
+QRectF GGraphicsPointItem::boundingRect() const
+{
+    QRectF(m_point+ QPoint(-1,1), m_point + QPoint(1,1));
+}
+
+void GGraphicsPointItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+     painter->drawLine(m_point, m_point);
+}
+
+//------------------------------------------GGraphics Line Item------------------------
+
+GGraphicsLineItem::GGraphicsLineItem(QGraphicsItem* parent):GGraphicsItem (parent)
+{}
+
+GGraphicsLineItem* GGraphicsLineItem::create()
+{
+    return new GGraphicsLineItem;
+}
+
+void GGraphicsLineItem::setStartPoint(const QPoint& point)
+{
+    m_start = point;
+}
+
+void GGraphicsLineItem::setEndPoint(const QPoint& point)
+{
+    m_end = point;
+}
+
+void GGraphicsLineItem::changeSize(const QPoint& point)
+{
+   m_end = point;
+}
+
+QRectF GGraphicsLineItem::boundingRect() const
+{
+    return QRectF(m_start+QPoint(-1, 1), m_end + QPoint(1,-1));
+}
+
+void GGraphicsLineItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+{
+    painter->drawLine(m_start, m_end);
+}
+
+
+
 

@@ -8,7 +8,6 @@ class QGraphicsItem;
 class QGraphicsRectItem;
 class Editor;
 
-
 class GAction : public QAction
 {
     Q_OBJECT
@@ -17,7 +16,7 @@ public:
     GAction(const QString &text, QObject *parent = nullptr);
     GAction(const QIcon &icon, const QString &text, QObject *parent = nullptr);
 
-    virtual QGraphicsItem* getObject() = 0;
+    virtual GGraphicsItem* getObject() = 0;
 };
 
 class GRectAction : public GAction
@@ -28,25 +27,24 @@ public:
     GRectAction(const QString &text, QObject *parent = nullptr);
     GRectAction(const QIcon &icon, const QString &text, QObject *parent = nullptr);
 
-    QGraphicsItem* getObject() override;
+    GGraphicsItem* getObject() override;
 
 private:
     QGraphicsRectItem* m_rectItem;
 };
 
-class GPointAction : public GAction
+// Line Action for drawing point
+class GLineAction : public GAction
 {
     Q_OBJECT
 public:
-    GPointAction(QObject* parent = nullptr);
-    GPointAction(const QString &text, QObject *parent = nullptr);
-    GPointAction(const QIcon &icon, const QString &text, QObject *parent = nullptr);
+    GLineAction(QObject* parent = nullptr);
+    GLineAction(const QString &text, QObject *parent = nullptr);
+    GLineAction(const QIcon &icon, const QString &text, QObject *parent = nullptr);
 
-    QGraphicsItem* getObject() override;
-
-private:
-    GGraphicsPointItem* m_pointItem;
+    GGraphicsItem* getObject() override;
 };
+
 
 class GStyleAction : public QAction
 {

@@ -42,7 +42,7 @@ MainWindow::~MainWindow()
 void MainWindow::createToolBar()
 {
     m_mainToolBar = new QToolBar(this);
-    m_drawLine = new QAction(m_mainToolBar);
+    m_drawLine = new GLineAction(m_mainToolBar);
     m_drawLine->setIcon(QIcon(":/Icons/line.png"));
     m_drawLine->setText("Draw Line");
 
@@ -110,7 +110,9 @@ void MainWindow::actionClicked(QAction* action)
 {
     qDebug()<<"actionClicked";
     GAction* gaction = dynamic_cast<GAction*>(action);
-    m_editor->setCurrentItem(gaction->getObject());
+    if(gaction) {
+        m_editor->setCurrentItem(gaction->getObject());
+    }
 }
 
 void MainWindow::styleActionClicked(QAction* action)

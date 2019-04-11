@@ -26,13 +26,8 @@ class GraphicsScene : public QGraphicsScene
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* ev) override;
     QVector<QRect> getRects() const;
     void drawCoordinateLines();
-    GGraphicsItem* getCurrentItem() const;
-    void setCurrentItem(GGraphicsItem* item);
 
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
-
-private:
-    GGraphicsItem* m_currentItem;
 };
 
 class GraphicsView : public QGraphicsView
@@ -42,6 +37,8 @@ public:
     GraphicsView() = default;
     GraphicsView(GraphicsScene* scene, QWidget* parent = nullptr);
     virtual ~GraphicsView(){}
+    GGraphicsItem* getCurrentItem() const;
+    void setCurrentItem(GGraphicsItem* item);
 
 private slots:
     void sendEvent()
@@ -59,7 +56,8 @@ private:
 
 //members
 private:
-    QGraphicsItem* m_rect;
+    GGraphicsItem* m_currentItem;
+    GGraphicsItem* m_drawableItem;
     GraphicsScene* m_gScene;
 };
 

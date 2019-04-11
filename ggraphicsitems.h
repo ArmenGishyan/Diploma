@@ -12,7 +12,9 @@ class GGraphicsItem : public QGraphicsItem
 public:
     GGraphicsItem(QGraphicsItem * parent = 0);
     virtual GGraphicsItem* create() = 0;
-    virtual void changeSize(const QList<QPoint>& points) = 0;
+    virtual void setStartPoint(const QPoint& point) = 0;
+    virtual void setEndPoint(const QPoint& point) = 0;
+    virtual void changeSize(const QPoint& point) = 0;
 };
 
 // Graphics Rect Item
@@ -21,9 +23,11 @@ class GGraphicsRectItem : public GGraphicsItem
 public:
     GGraphicsRectItem(QGraphicsItem* parent = nullptr);
     GGraphicsRectItem* create() override;
+    void setStartPoint(const QPoint& point) override;
+    void setEndPoint(const QPoint& point) override;
+    void changeSize(const QPoint& points) override;
     QRectF boundingRect() const override;
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr) override;
-    void changeSize(const QList<QPoint>& points) override;
     QRectF rect() const {return m_rect;}
     void setRect(QRectF rect) {m_rect = rect.toRect();}
 
@@ -36,10 +40,12 @@ class GGraphicsPointItem : public GGraphicsItem
 {
 public:
     GGraphicsPointItem(QGraphicsItem* parent = nullptr);
+    virtual GGraphicsPointItem* create() override;
+    virtual void setStartPoint(const QPoint& point) override;
+    virtual void setEndPoint(const QPoint& point) override;
+    virtual void changeSize(const QPoint& points) override;
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    virtual GGraphicsPointItem* create() override;
-    virtual void changeSize(const QList<QPoint>& points) override;
     int getX() {return m_point.rx();}
     int getY() {return m_point.ry();}
     void setX(int x ) {m_point.setX(x);}
@@ -49,5 +55,21 @@ private:
     QPoint m_point;
 };
 
+// Graphics Line Item
+class GGraphicsLineItem : public GGraphicsItem
+{
+public:
+    GGraphicsLineItem(QGraphicsItem* parent = nullptr);
+    GGraphicsLineItem* create() override;
+    void setStartPoint(const QPoint& point) override;
+    void setEndPoint(const QPoint& point) override;
+    void changeSize(const QPoint& points) override;
+    QRectF boundingRect() const override;
+    void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr) override;
+
+private:
+    QPoint m_start;
+    QPoint m_end;
+};
 
 #endif // GGRAPHICSITEMS_H

@@ -26,7 +26,7 @@ public:
     QBrush getBrush() const {return m_brush;}
 
 public:
-    void setCurrentItem(QGraphicsItem* item);
+    void setCurrentItem(GGraphicsItem* item);
 
 private:
       QPen m_pen;
