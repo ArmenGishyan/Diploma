@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     obj.connNodes(ccA, ccX, 2);
     obj.connNodes(ccX, ccY, 2);
     obj.connNodes(ccY, ccF, 2);
-    //obj.connNodes(ccA, ccF, 1);
+    obj.connNodes(ccA, ccF, 10);
 
 
 //	Node<int>* cc5 = new Node<int>("4");

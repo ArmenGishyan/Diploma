@@ -5,10 +5,12 @@
 #include <QDebug>
 #include <QIcon>
 #include <QToolButton>
+#include <QDesktopWidget>
 #include "editor.h"
 #include "dockwidgets.h"
 #include "engine.h"
-
+#include <assert.h>
+#include <QApplication>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -19,7 +21,15 @@ MainWindow::MainWindow(QWidget *parent) :
     createFileMenu();
     createStyleToolBar();
 
+    QRect screenGeometry = QApplication::desktop()->screenGeometry();
+    int width = screenGeometry.width();
+    int height = screenGeometry.height();
+    width -= 0.1*width;
+    height -= 0.1*height;
+   // setFixedSize(QSize(x, y));
     //init Editor
+    setMinimumHeight(height);
+    setMinimumWidth(width);
     initEditor();
     setCentralWidget(m_editor);
 
@@ -28,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // create Action ToolBar
     createActionToolBar();
-
 
 }
 
@@ -138,8 +147,14 @@ void MainWindow::createActionToolBar()
     m_getShortPath->setIcon(QIcon(":/Icons/shortPath.png"));
     m_actionToolBar->addAction(m_getShortPath);
 
+    QAction* clearEitor = new QAction("Delete All Shapes");
+    clearEitor->setIcon(QIcon(":/Icons/clear.png"));
+    m_actionToolBar->addAction(clearEitor);
+
+    assert(connect(clearEitor, SIGNAL(triggered(bool)), m_editor, SLOT(clearAll())));
+
     addToolBar(Qt::LeftToolBarArea, m_actionToolBar);
-    qDebug()<<"result = "<<connect(m_getShortPath, SIGNAL(triggered(bool)), this, SLOT(handleshortedPathAction()));
+    connect(m_getShortPath, SIGNAL(triggered(bool)), this, SLOT(handleshortedPathAction()));
 }
 
 void MainWindow::handleshortedPathAction()

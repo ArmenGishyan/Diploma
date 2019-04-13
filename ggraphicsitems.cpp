@@ -2,18 +2,32 @@
 #include <QDebug>
 #include <QPainter>
 #include <QApplication>
+#include <utility>
+
+#include "ggraphicsstyle.h"
+
+std::unique_ptr<GGraphicsStyle> GGraphicsItem::m_styleInSelection = std::make_unique<GGraphicsStyle>(QPen(QColor(Qt::yellow)));
 
 //-----------------Base Graphics Item
 GGraphicsItem::GGraphicsItem(QGraphicsItem * parent) : QGraphicsItem(parent)
 {
+    m_style = std::make_shared<GGraphicsStyle>(QColor(Qt::green));
+}
 
+GGraphicsItem::GGraphicsItem(std::string name, QGraphicsItem * parent): GGraphicsItem(parent)
+{
+    m_name = name;
 }
 
 //----------------Rect Item
 GGraphicsRectItem::GGraphicsRectItem(QGraphicsItem* parent):GGraphicsItem (parent)
 {
     m_rect = QRect();
-    show();
+}
+
+GGraphicsRectItem::GGraphicsRectItem(std::string name, QGraphicsItem* parent) : GGraphicsItem (name,parent)
+{
+    m_rect = QRect();
 }
 
 GGraphicsRectItem* GGraphicsRectItem::create()
@@ -24,17 +38,34 @@ GGraphicsRectItem* GGraphicsRectItem::create()
 
 QRectF GGraphicsRectItem::boundingRect() const
 {
-    qDebug()<<"GGraphicsRectItem::boundingRect";
     QPoint leftTop = m_rect.topLeft();
     QPoint bottomRight = m_rect.bottomRight();
 
-    return QRectF((leftTop + QPoint(-1, 1)), bottomRight + QPoint(1, 1));
+    return QRectF((leftTop + QPoint(-1, 1)), bottomRight + QPoint(1, -1));
 }
 
 void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
-    qDebug()<<"-------------------GGraphicsRectItem::paint";
+
     painter->drawRect(m_rect);
+    QTransform transform;
+   // transform.rotate(270);
+   // painter->setTransform(transform);
+    QString rightBottom = QString::number(m_rect.bottomRight().x()) + ", " + QString::number(m_rect.bottomRight().y());
+    QString leftTop = QString::number(m_rect.topLeft().x()) + ", " + QString::number(m_rect.topLeft().y());
+
+    //transform.rotateRadians(23);
+    //painter->rotate(90); //setTransform(transform);
+    painter->drawText(m_rect.bottomRight() + QPoint(2, -1), rightBottom);
+    painter->drawText(m_rect.topLeft() + QPoint(-1, 1), leftTop);
+    QFont font;
+    font.setBold(true);
+    font.setWeight(2);
+
+    painter->drawText(m_rect.center(), QString::fromStdString(name()));
+
+    //painter->setFont()
+    //painter->rotate(-90);
 }
 
 

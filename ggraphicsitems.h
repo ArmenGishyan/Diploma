@@ -5,22 +5,38 @@
 
 #include <QPoint>
 #include <QDebug>
+#include <memory>
+
+class GGraphicsStyle;
 
 // Base class all Graphics Item
 class GGraphicsItem : public QGraphicsItem
 {
 public:
-    GGraphicsItem(QGraphicsItem * parent = 0);
+    GGraphicsItem(std::string name, QGraphicsItem * parent = nullptr);
+    GGraphicsItem(QGraphicsItem * parent = nullptr);
     virtual GGraphicsItem* create() = 0;
     virtual void setStartPoint(const QPoint& point) = 0;
     virtual void setEndPoint(const QPoint& point) = 0;
     virtual void changeSize(const QPoint& point) = 0;
+    inline void setStyle(std::shared_ptr<GGraphicsStyle> style) { m_style = style;}
+    inline std::shared_ptr<GGraphicsStyle> style() const {return m_style;}
+    inline void setName(const QString& name) {m_name = name.toStdString();}
+    inline std::string name() const {return m_name;}
+
+private:
+    std::string m_name;
+    std::shared_ptr<GGraphicsStyle> m_style;
+    // this static member describe how item should behave when selected
+    static std::unique_ptr<GGraphicsStyle> m_styleInSelection;
+
 };
 
 // Graphics Rect Item
 class GGraphicsRectItem : public GGraphicsItem
 {
 public:
+    GGraphicsRectItem(std::string name, QGraphicsItem* parent = nullptr);
     GGraphicsRectItem(QGraphicsItem* parent = nullptr);
     GGraphicsRectItem* create() override;
     void setStartPoint(const QPoint& point) override;

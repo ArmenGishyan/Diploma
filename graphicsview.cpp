@@ -14,29 +14,36 @@
 
 GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView (gScene, parent)
 {
-    if(parent != nullptr) {
-        this->setSceneRect(QRectF(parent->rect()));
-    } else {
-        this->setSceneRect(QRectF(0, 0, 1000, 1000));
-    }
-    setBackgroundBrush(QBrush(Qt::darkBlue, Qt::SolidPattern));
+    m_gScene = gScene;
+   // gScene->setSceneRect(this->rect());
+
+    //m_gScene->setSceneRect(QRectF(this->rect()));
+
+
+    setBackgroundBrush(QBrush("#C3E1F5", Qt::SolidPattern));
 
     m_currentItem = nullptr;
     m_drawableItem = nullptr;
 
+    int height = parent->rect().height(); // + QPoint(50,50);
+    int width = parent->rect().width(); //- QPoint(50,50);
+
+    //setFixedSize(height, width);
+    //setSceneRect(QRectF(0, 0, 690, 800)); // 295, 295));
     setMouseTracking(true);
 
     QGridLayout* lay = new QGridLayout;
     setLayout(lay);
-    m_gScene = gScene;
+    //scale(1, -1);
 
+    rotate(270);
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
 {
     if(m_drawableItem && ev->buttons() == Qt::LeftButton) {
 
-        m_drawableItem->setEndPoint(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+        m_drawableItem->setEndPoint(mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint());
         m_drawableItem = nullptr;
         update();
     }
@@ -48,9 +55,12 @@ void GraphicsView::mousePressEvent(QMouseEvent* ev)
 {
     qDebug()<<"Current item = "<<m_currentItem;
     if(m_currentItem && ev->buttons() == Qt::LeftButton) {
-        m_drawableItem = m_currentItem->create(); // = new GGraphicsRectItem;
-        m_drawableItem->setStartPoint(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+        m_drawableItem = m_currentItem->create();
+        m_drawableItem->setStartPoint(mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint());
+        qDebug()<<"Scence rect = "<<scene()->sceneRect();
         if(m_gScene) {
+            QList<QGraphicsItem*> items = m_gScene->items();
+            m_drawableItem->setName("Shape_"+QString::number(items.count()));
             m_gScene->addItem(m_drawableItem);
         }
     }
@@ -63,10 +73,10 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
 {
     if(m_drawableItem && ev->buttons() == Qt::LeftButton) {
         qDebug()<<"inside if";
-        QPoint point = (ev->pos()); // + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+        QPoint point = (mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint()); // + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
         QList<QPoint> itemsList;
         itemsList << point;
-        m_drawableItem->changeSize(ev->pos());
+        m_drawableItem->changeSize(point);
         update();
     }
 }
@@ -74,7 +84,7 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
 
 void GraphicsView::paintEvent(QPaintEvent* ev)
 {
-    qDebug()<<"--------------------------------------------------------------GraphicsView paint event";
+   // qDebug()<<"--------------------------------------------------------------GraphicsView paint event";
     QGraphicsView::paintEvent(ev);
 }
 
@@ -121,7 +131,8 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void GraphicsScene::drawCoordinateLines()
 {
-    addLine(10,0,10,100, QPen(QBrush(Qt::green),10));
+    addLine(QLine(0,0, 100, 0), QPen(QColor(Qt::yellow)));
+    addLine(QLine(0,0, 0, 100), QPen(QColor(Qt::yellow)));
 }
 
 

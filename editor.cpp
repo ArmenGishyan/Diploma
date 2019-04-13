@@ -17,10 +17,19 @@ Editor::Editor(QWidget* parent):QWidget (parent)
     m_pen = QPen();
     m_brush = QBrush();
 
-    //setFixedSize(, 1000);
+   // setFixedSize(QSize(300,300));
+   // setFixedSize(parent->width(), parent->height());
+    qDebug()<<"parent  width = "<<parent->width();
+    qDebug()<<"parent height = "<<parent->height();
     m_grScene  = new GraphicsScene(this);
-    m_grView = new GraphicsView(m_grScene);
-    QHBoxLayout* lay = new QHBoxLayout;;
+    m_grView = new GraphicsView(m_grScene, this);
+    m_grScene->setSceneRect(0,0,100, 100);
+    //m_grScene->setSceneRect(0,0,this->width(), this->height());
+    setStyleSheet("background-color: #F08080");
+
+    QHBoxLayout* lay = new QHBoxLayout;
+    qDebug()<<"View rect = "<<m_grView->rect();
+    qDebug()<<"Scene rect = "<<m_grScene->sceneRect();
     lay->addWidget(m_grView);
     setLayout(lay);
 }
@@ -28,17 +37,19 @@ Editor::Editor(QWidget* parent):QWidget (parent)
 void Editor::paintEvent(QPaintEvent* p)
 {
     QPainter painter(this);
-    QRect rec(10,10,50,50);
-
-    painter.setPen(Qt::blue);
-    painter.drawRect(rec);
-
-    painter.setFont(QFont("Arial", 30));
-    painter.drawText(rect(), Qt::AlignCenter, "Qt");
-    qDebug()<<"paint event";
-    m_grScene->update(this->rect());
+    painter.drawLine(QPoint(0,0), QPoint(50,0));
+    painter.drawLine(QPoint(0,0), QPoint(0,50));
+    m_grScene->update();
     QWidget::paintEvent(p);
 }
+
+//void Editor::resizeEvent(QResizeEvent *event)
+//{
+//    qDebug()<<"--------------"<<"Editor::resizeEvent";
+//    m_grView->setFixedSize(this->width(), this->height());
+//    m_grScene->setSceneRect(this->rect());
+//    //QWidget::resizeEvent(event);
+//}
 
 void Editor::mouseMoveEvent(QMouseEvent* ev)
 {
@@ -105,4 +116,12 @@ void Editor::setCurrentItem(GGraphicsItem* item)
     }
 }
 
-
+void Editor::clearAll()
+{
+    qDebug()<<"Editor::clear";
+    if(m_grScene) {
+        m_grScene->clear();
+        m_grScene->update();
+        m_grScene->drawCoordinateLines();
+    }
+}

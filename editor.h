@@ -10,9 +10,12 @@ class QGraphicsRectItem;
 
 class Editor : public QWidget
 {
+    Q_OBJECT
 public:
     Editor(QWidget* parent = nullptr);
     void paintEvent(QPaintEvent* p) override;
+    //void resizeEvent(QResizeEvent *event) override;
+
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void dragMoveEvent(QDragMoveEvent* event) override;
@@ -20,19 +23,23 @@ public:
     void dropEvent(QDropEvent* event) override;
     void setPen(QPen pen) {m_pen = pen;}
     void setBrush(QBrush brush) {m_brush = brush;}
+    //void setSenceRect(const QRect& rect) {m_grScene->setSceneRect(rect);}
     template<class T>
     QList<T> getShapeItems() const;
     QPen getPen() const {return m_pen;}
     QBrush getBrush() const {return m_brush;}
-
-public:
     void setCurrentItem(GGraphicsItem* item);
 
+public slots:
+ //   template<class T>
+ //   void clear();
+    void clearAll();
+
 private:
-      QPen m_pen;
-      QBrush m_brush;
-      GraphicsScene* m_grScene;
-      GraphicsView* m_grView;
+    QPen m_pen;
+    QBrush m_brush;
+    GraphicsScene* m_grScene;
+    GraphicsView* m_grView;
 };
 
 //get Rectangles from GraphicsScene
@@ -54,4 +61,12 @@ QList<T> Editor::getShapeItems() const
     }
     return shapeItems;
 }
+
+//template <class T>
+//void Editor::clear()
+//{
+//    if(m_grScene) {
+//        QList<T> items = m_grScene->items();
+//    }
+//}
 #endif // COORDINATESYSTEM_H

@@ -28,6 +28,8 @@ class GraphicsScene : public QGraphicsScene
     void drawCoordinateLines();
 
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    //void addItem() = delete;
+
 };
 
 class GraphicsView : public QGraphicsView
