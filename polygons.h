@@ -1,8 +1,6 @@
 #pragma once
 #include <functional>
-
-#include "shape.h"
-#include "point.h"
+#include <QRectF>
 
 using T = int;
 
@@ -12,6 +10,17 @@ class IShape
 public:
     IShape(){}
     virtual T square() const = 0;
+    void setName(std::string name)
+    {
+        m_name = name;
+    }
+    std::string name() const
+    {
+        return m_name;
+    }
+
+private:
+    std::string m_name;
 };
 
 
@@ -31,10 +40,10 @@ private:
 class Polygon : public IShape
 {
 public:
-    Polygon(): IShape() {}
+    Polygon(): IShape() { setName("");}
     virtual ~Polygon() {}
-	virtual T squareOfOverlap(Polygon* pol) const;
-	virtual bool isIntersect(Polygon* pol) const;
+    virtual T squareOfOverlap(const Polygon* pol) const;
+    virtual bool isIntersect(const Polygon* pol) const;
 
 };
 
@@ -44,10 +53,11 @@ public:
     Rectangle(Point leftTop, Point bottomRight);
     ~Rectangle() override {}
 	T square() const override;
-	T squareOfOverlap(Polygon* pol) const override;
-	bool isIntersect(Polygon* pol) const override ;
-    Point getLeftTopPoint() const;
-    Point getRightBottomPoint() const;
+    T squareOfOverlap(const Polygon* pol) const override;
+    QRectF squareOfOverlapTest(const Polygon* pol) const;
+    bool isIntersect(const Polygon* pol) const override ;
+    Point leftTop() const;
+    Point rightBottom() const;
 
 private:
     Point  m_leftTop;

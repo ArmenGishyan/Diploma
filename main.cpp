@@ -15,7 +15,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Engine engine;
-    engine.createGraph<int>();
+    //engine.createGraph<int, Rectangle>();
+    //engine.findPath<Rectangle>();
    // MainWindow w;
    // w.show();
 

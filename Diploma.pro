@@ -52,7 +52,8 @@ HEADERS += \
     ggraphicsshapesitem.h \
     ggraphicsitems.h \
     dockwidgets.h \
-    ggraphicsstyle.h
+    ggraphicsstyle.h \
+    graphnode.h
 
 FORMS += \
         mainwindow.ui

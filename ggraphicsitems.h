@@ -22,9 +22,10 @@ public:
     inline void setStyle(std::shared_ptr<GGraphicsStyle> style) { m_style = style;}
     inline std::shared_ptr<GGraphicsStyle> style() const {return m_style;}
     inline void setName(const QString& name) {m_name = name.toStdString();}
-    inline std::string name() const {return m_name;}
+    std::string name() const ; //const {
+        //return m_name;}
 
-private:
+protected:
     std::string m_name;
     std::shared_ptr<GGraphicsStyle> m_style;
     // this static member describe how item should behave when selected

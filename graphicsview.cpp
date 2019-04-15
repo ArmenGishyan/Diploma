@@ -11,6 +11,7 @@
 #include <QScrollBar>
 #include <QEvent>
 #include <QPaintEvent>
+#include <QPainterPath>
 
 GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView (gScene, parent)
 {
@@ -63,6 +64,9 @@ void GraphicsView::mousePressEvent(QMouseEvent* ev)
             m_drawableItem->setName("Shape_"+QString::number(items.count()));
             m_gScene->addItem(m_drawableItem);
         }
+
+
+
     }
 
 
@@ -131,8 +135,8 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void GraphicsScene::drawCoordinateLines()
 {
-    addLine(QLine(0,0, 100, 0), QPen(QColor(Qt::yellow)));
-    addLine(QLine(0,0, 0, 100), QPen(QColor(Qt::yellow)));
+   // addLine(QLine(0,0, 100, 0), QPen(QColor(Qt::yellow)));
+   // addLine(QLine(0,0, 0, 100), QPen(QColor(Qt::yellow)));
 }
 
 

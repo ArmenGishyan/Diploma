@@ -13,10 +13,11 @@ Engine::Engine()
     m_mainWindow->initEngine(this);
 }
 
-std::vector<Rectangle> Engine::getRectangles() const
+std::vector<Rectangle> Engine::getRectanglesFromGui() const
 {
    const Editor* editor = m_mainWindow ? m_mainWindow->getEditor() : nullptr;
 
+   Graph<int>* graph = new Graph<int>;
    std::vector<Rectangle> rectVector;
    QList<GGraphicsRectItem*> rectItems;
    if(editor) {
@@ -30,9 +31,16 @@ std::vector<Rectangle> Engine::getRectangles() const
        QRect rect = rectItems[i]->rect().toRect();
        QPoint topLeft = rect.topLeft();
        QPoint bottomRight = rect.bottomRight();
-       rectVector.push_back(Rectangle(Point(topLeft.x(), topLeft.y()), Point(bottomRight.x(), bottomRight.y())));
+       Rectangle rectangle(Point(topLeft.x(), topLeft.y()), Point(bottomRight.x(), bottomRight.y()));
+       std::string name = rectItems[i]->name();
+       int x =0;
+       ++x;
+       rectangle.setName(name);
+       rectVector.push_back(rectangle);
    }
 
    return rectVector;
 
 }
+
+

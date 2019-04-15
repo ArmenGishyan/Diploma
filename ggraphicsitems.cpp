@@ -11,6 +11,7 @@ std::unique_ptr<GGraphicsStyle> GGraphicsItem::m_styleInSelection = std::make_un
 //-----------------Base Graphics Item
 GGraphicsItem::GGraphicsItem(QGraphicsItem * parent) : QGraphicsItem(parent)
 {
+    m_name = "";
     m_style = std::make_shared<GGraphicsStyle>(QColor(Qt::green));
 }
 
@@ -19,15 +20,27 @@ GGraphicsItem::GGraphicsItem(std::string name, QGraphicsItem * parent): GGraphic
     m_name = name;
 }
 
+std::string GGraphicsItem::name() const
+{
+    try {
+        qDebug()<<QString::fromStdString(m_name);
+        return  m_name;
+    } catch (...) {
+        return "";
+    }
+
+}
 //----------------Rect Item
 GGraphicsRectItem::GGraphicsRectItem(QGraphicsItem* parent):GGraphicsItem (parent)
 {
     m_rect = QRect();
+    setSelected(true);
 }
 
 GGraphicsRectItem::GGraphicsRectItem(std::string name, QGraphicsItem* parent) : GGraphicsItem (name,parent)
 {
     m_rect = QRect();
+    setSelected(true);
 }
 
 GGraphicsRectItem* GGraphicsRectItem::create()

@@ -62,11 +62,4 @@ QList<T> Editor::getShapeItems() const
     return shapeItems;
 }
 
-//template <class T>
-//void Editor::clear()
-//{
-//    if(m_grScene) {
-//        QList<T> items = m_grScene->items();
-//    }
-//}
 #endif // COORDINATESYSTEM_H

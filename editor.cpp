@@ -120,6 +120,9 @@ void Editor::clearAll()
 {
     qDebug()<<"Editor::clear";
     if(m_grScene) {
+        auto selItems = m_grScene->selectedItems();
+        int i = 0;
+        ++i;
         m_grScene->clear();
         m_grScene->update();
         m_grScene->drawCoordinateLines();

@@ -82,8 +82,11 @@ void MainWindow::createFileMenu()
     m_fileMenu = menuBar()->addMenu("File");
     m_fileMenu->addAction(new QAction("New"));
     m_fileMenu->addAction(new QAction("Open"));
-    m_fileMenu->addAction(new QAction("Save"));
     m_fileMenu->addAction(new QAction("Save As"));
+
+    QAction* openAction = new QAction("Open");
+    connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openClicked()));
+    m_fileMenu->addAction(new QAction("Save"));
 
     QList<QAction*> it = m_fileMenu->actions();
 }
@@ -161,8 +164,14 @@ void MainWindow::handleshortedPathAction()
 {
     qDebug()<<"handleshortedPathAction";
     if(m_engine) {
-        auto rects = m_engine->getRectangles();
+        std::vector<Rectangle> rects = m_engine->findPath<Rectangle>();
         int x = 0;
+        ++x;
     }
+
 }
 
+void MainWindow::openClicked()
+{
+    qDebug()<<"open Clicked";
+}

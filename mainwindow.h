@@ -41,6 +41,7 @@ public slots:
     void actionClicked(QAction*);
     void styleActionClicked(QAction*);
     void handleshortedPathAction();
+    void openClicked();
 
   //  void handleDrawRect();
   //  void handleDrawLine();

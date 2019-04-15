@@ -1,3 +1,6 @@
+#ifndef GRAPH_H
+#define GRAPH_H
+
 #include <list>
 #include <string>
 #include <vector>
@@ -12,41 +15,9 @@
 #include <deque>
 #include <type_traits>
 #include <QDebug>
+#include "graphnode.h"
 
 
-
-template<class T>
-struct Node
-{
-	Node(std::string name, T value = T(), int weight = 1) :
-        m_name(name), value(value)
-	{}
-	Node() = default;
-	Node(const Node& obj) = default;
-
-	int getIndex() const
-	{
-        std::stringstream str(m_name);
-		int x = 0;
-		str >> x;
-		
-		return x;
-	}
-    std::string name() const
-	{
-        return m_name;
-	}
-
-	bool operator == (const Node& obj)
-	{
-		std::cout << "operator == " << std::endl;
-		return true;
-	}
-
-private:
-    std::string m_name;
-	T value;
-};
 
 namespace std
 {
@@ -94,11 +65,13 @@ public:
 	Graph() = default;
 	Graph(int nodeCount);
 	void addNode(Node<E>*);
-	void connNodes(Node<E>*, Node<E>*, int weight = 1);
+    bool connNodes(Node<E>*, Node<E>*, int weight = 1);
+    bool connNodes(const std::string node1, const std::string node2, int weight = 1);
 	std::vector<Node<E>*> BFS() const;
 	std::vector<Node<E>*> DFS() const;
     void deleteNode(const Node<E>* node, bool force = false);
     std::vector<Node<E>*> getNodes() const;
+    Node<E>* getNode(const std::string& name) const;
 	void print() const;
 
 private:
@@ -119,12 +92,12 @@ void Graph<T>::addNode(Node<T>* node)
 }
 
 template<class T>
-void Graph<T>::connNodes(Node<T>* node1, Node<T>* node2, int weight)
+bool Graph<T>::connNodes(Node<T>* node1, Node<T>* node2, int weight)
 {
     auto it = m_adj.begin();
+    bool flag1 = true;
+    bool flag2 = true;
     while (it != m_adj.end()) {
-        bool flag1 = true;
-        bool flag2 = true;
         if (flag1 && it->first->name() == node1->name()) {
             it->second.insert(std::pair<Node<T>*, int >(node2, weight));
             flag1 = false;
@@ -134,11 +107,23 @@ void Graph<T>::connNodes(Node<T>* node1, Node<T>* node2, int weight)
             flag2 = false;
         }
         if (!flag1 && !flag2)
-            break;
+            return true;
         ++it;
     }
+    return false;
 }
 
+template<class T>
+bool Graph<T>::connNodes(const std::string node1, const std::string node2, int weight)
+{
+    Node<T>* nodeFirst = getNode(node1);
+    Node<T>* nodeSecond = getNode(node2);
+    if(!nodeFirst || !nodeSecond)
+        return false;
+
+    return connNodes(nodeFirst, nodeSecond, weight);
+
+}
 template<class T>
 void Graph<T>::print() const
 {
@@ -316,3 +301,16 @@ std::vector<std::pair<Node<T>*,int>> Graph<T>::getNeighboursWithWeight(Node<T>* 
     std::vector<std::pair<Node<T>*, int>> neighbours(adjList.begin(),adjList.end());
     return std::move(neighbours);
 }
+
+template <class T>
+Node<T>* Graph<T>::getNode(const std::string& name) const
+{
+    for(int i = 0; i< m_adj.size(); ++i) {
+        if(m_adj[i].first->name() == name) {
+            return m_adj[i].first;
+        }
+    }
+
+    return nullptr;
+}
+#endif

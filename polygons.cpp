@@ -27,13 +27,13 @@ namespace Helpers{
 	}
 }
 
-T Polygon::squareOfOverlap(Polygon* pol) const
+T Polygon::squareOfOverlap(const Polygon* pol) const
 {
     assert(false && "don't complete");
 	return 0;
 }
 
-bool Polygon::isIntersect(Polygon* pol) const
+bool Polygon::isIntersect(const Polygon* pol) const
 {
     assert(false && "don't complete");
 	return 0;
@@ -41,7 +41,7 @@ bool Polygon::isIntersect(Polygon* pol) const
 
 Rectangle::Rectangle(Point leftTop, Point bottomRight): Polygon (), m_leftTop(leftTop), m_rightBottom(bottomRight)
 {}
-bool Rectangle::isIntersect(Polygon* pol) const
+bool Rectangle::isIntersect(const Polygon* pol) const
 {
     assert(false && "don't complete");
 	return true;
@@ -51,12 +51,12 @@ T Rectangle::square() const
 {
     return std::abs(m_leftTop.getX()-m_rightBottom.getX()) * std::abs(m_leftTop.getY()- m_rightBottom.getY());
 }
-T Rectangle::squareOfOverlap(Polygon* pol) const
+T Rectangle::squareOfOverlap(const Polygon* pol) const
 {
-    Rectangle* rect = static_cast<Rectangle*>(pol);
+    const Rectangle* rect = dynamic_cast<const Rectangle*>(pol);
 	if (rect) {
-        Point topLeft = rect->getLeftTopPoint();
-        Point rightBottom = rect->getRightBottomPoint();
+        Point topLeft = rect->leftTop();
+        Point rightBottom = rect->rightBottom();
 		auto max = [](T a, T b) {return a > b; };
 		auto min = [](T a, T b) {return a < b; };
 
@@ -78,12 +78,30 @@ T Rectangle::squareOfOverlap(Polygon* pol) const
 	return -1;
 }
 
-Point Rectangle::getLeftTopPoint() const
+QRectF Rectangle::squareOfOverlapTest(const Polygon* pol) const
+{
+    const Rectangle* rect = dynamic_cast<const Rectangle*>(pol);
+    if (rect) {
+        QPoint topLeftThis(m_leftTop.getX(),m_leftTop.getY());
+        QPoint bottomRightThis(m_rightBottom.getX(), m_rightBottom.getY());
+        QPoint topLeftOther(rect->leftTop().getX(), rect->leftTop().getY());
+        QPoint bottomRightOther(rect->rightBottom().getX(), rect->rightBottom().getY());
+
+        QRectF  rectThis(topLeftThis, bottomRightThis);
+        QRectF  rectOther(topLeftOther, bottomRightOther);
+
+        return rectThis.intersected(rectOther);
+    }
+
+    return QRectF();
+}
+
+Point Rectangle::leftTop() const
 {
 	return m_leftTop;
 }
 
-Point Rectangle::getRightBottomPoint() const
+Point Rectangle::rightBottom() const
 {
 	return m_rightBottom;
 }
