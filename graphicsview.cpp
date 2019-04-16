@@ -43,11 +43,15 @@ GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView
 void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
 {
     if(m_drawableItem && ev->buttons() == Qt::LeftButton) {
-
         m_drawableItem->setEndPoint(mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint());
         m_drawableItem = nullptr;
+        QList<QGraphicsItem*> item = m_gScene->selectedItems();
         update();
+        for(int i=0; i< item.size(); ++i) {
+            item[i]->setSelected(true);
+        }
     }
+
 
     qDebug()<<"GraphicsView::mouseReleaseEvent size = "<<items().size();
     QGraphicsView::mouseReleaseEvent(ev);
@@ -55,6 +59,10 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
 void GraphicsView::mousePressEvent(QMouseEvent* ev)
 {
     qDebug()<<"Current item = "<<m_currentItem;
+    if(!m_currentItem) {
+        m_drawableItem = nullptr;
+    }
+
     if(m_currentItem && ev->buttons() == Qt::LeftButton) {
         m_drawableItem = m_currentItem->create();
         m_drawableItem->setStartPoint(mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint());
@@ -103,6 +111,23 @@ void GraphicsView::setCurrentItem(GGraphicsItem* item)
     delete m_currentItem;
     m_currentItem = item;
 }
+
+void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
+{
+
+    if(m_gScene) {
+        QList<QGraphicsItem*> items = m_gScene->selectedItems();
+        m_gScene->update();
+        m_selectedItem.push(qgraphicsitem_cast<GGraphicsItem*>(items.front()));
+
+        for(int i=0;i<items.size(); ++i) {
+            items[i]->setSelected(true);
+        }
+    }
+    qDebug()<<"GraphicsView::mouseDoubleClickEvent";
+    QGraphicsView::mouseDoubleClickEvent(event);
+}
+
 
 //---------------------------------------------------------------------GGraphicsScene----------------
 GraphicsScene::GraphicsScene(QObject* parent):QGraphicsScene (parent)

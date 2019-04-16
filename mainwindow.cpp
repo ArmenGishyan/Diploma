@@ -63,9 +63,13 @@ void MainWindow::createToolBar()
     m_drawPoint->setIcon(QIcon(":/Icons/point.png"));
     m_drawPoint->setText("Draw Point");
 
+    GNoneShapeAction* noneShape = new GNoneShapeAction(this);
+    noneShape->setIcon(QIcon(":/Icons/noShape.png"));
+    noneShape->setText("None Shape");
     m_mainToolBar->addAction(m_drawLine);
     m_mainToolBar->addAction(m_drawRect);
     m_mainToolBar->addAction(m_drawPoint);
+    m_mainToolBar->addAction(noneShape);
     connect(m_mainToolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(actionClicked(QAction*)));
 
     addToolBar(m_mainToolBar);
@@ -163,11 +167,20 @@ void MainWindow::createActionToolBar()
 void MainWindow::handleshortedPathAction()
 {
     qDebug()<<"handleshortedPathAction";
-    if(m_engine) {
-        std::vector<Rectangle> rects = m_engine->findPath<Rectangle>();
-        int x = 0;
-        ++x;
+
+    if(m_engine && m_editor) {
+        QList<GGraphicsItem*> items = m_editor->getSelectedItems();
+        if(items.empty())
+            return;
+        std::vector<std::string> rects = m_engine->findPath<Rectangle>("Shape_0", items[0]->name());
+        QList<QString> pathNames;
+        for(const std::string& it : rects) {
+            pathNames.push_back(QString::fromStdString(it));
+        }
+
+        m_editor->selectItems(pathNames);
     }
+
 
 }
 

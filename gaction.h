@@ -45,7 +45,14 @@ public:
     GGraphicsItem* getObject() override;
 };
 
+class GNoneShapeAction : public GAction
+{
+public:
+    GNoneShapeAction(QObject* parent = nullptr):GAction(parent){}
+    GGraphicsItem* getObject() override {return nullptr;}
+};
 
+//------------------------------------------------Style Action-----------------------------------------------
 class GStyleAction : public QAction
 {
 public:

@@ -7,6 +7,7 @@
   <file>./Icons/penStyle.png</file>
   <file>./Icons/shortPath.png</file>
   <file>./Icons/clear.png</file>
+  <file>./Icons/noShape.png</file>
 
 </qresource>
 </RCC>

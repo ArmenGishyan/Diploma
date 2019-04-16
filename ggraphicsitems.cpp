@@ -6,7 +6,7 @@
 
 #include "ggraphicsstyle.h"
 
-std::unique_ptr<GGraphicsStyle> GGraphicsItem::m_styleInSelection = std::make_unique<GGraphicsStyle>(QPen(QColor(Qt::yellow)));
+std::unique_ptr<GGraphicsStyle> GGraphicsItem::m_styleInSelection = std::make_unique<GGraphicsStyle>(QPen(QColor(Qt::yellow)),QBrush(Qt::green));
 
 //-----------------Base Graphics Item
 GGraphicsItem::GGraphicsItem(QGraphicsItem * parent) : QGraphicsItem(parent)
@@ -18,6 +18,7 @@ GGraphicsItem::GGraphicsItem(QGraphicsItem * parent) : QGraphicsItem(parent)
 GGraphicsItem::GGraphicsItem(std::string name, QGraphicsItem * parent): GGraphicsItem(parent)
 {
     m_name = name;
+    m_style = std::make_shared<GGraphicsStyle>(QColor(Qt::green));
 }
 
 std::string GGraphicsItem::name() const
@@ -30,16 +31,27 @@ std::string GGraphicsItem::name() const
     }
 
 }
-//----------------Rect Item
+
+void GGraphicsItem::setSelectionStyle(std::unique_ptr<GGraphicsStyle> style) {
+    m_styleInSelection = std::move(style);
+}
+
+std::unique_ptr<GGraphicsStyle> GGraphicsItem::getSelectionStyle() {
+    return std::move(m_styleInSelection);
+}
+
+//-------------------------------------------------Rect Item------------------------------
 GGraphicsRectItem::GGraphicsRectItem(QGraphicsItem* parent):GGraphicsItem (parent)
 {
     m_rect = QRect();
+    setFlag(QGraphicsItem::ItemIsSelectable);
     setSelected(true);
 }
 
 GGraphicsRectItem::GGraphicsRectItem(std::string name, QGraphicsItem* parent) : GGraphicsItem (name,parent)
 {
     m_rect = QRect();
+    setFlag(QGraphicsItem::ItemIsSelectable);
     setSelected(true);
 }
 
@@ -60,6 +72,11 @@ QRectF GGraphicsRectItem::boundingRect() const
 void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
 
+    painter->setPen(m_style->pen());
+    painter->setBrush(m_style->brush());
+
+    qDebug()<<"pen = "<<painter->pen();
+    qDebug()<<"brush = "<<painter->brush();
     painter->drawRect(m_rect);
     QTransform transform;
    // transform.rotate(270);
@@ -95,6 +112,20 @@ void GGraphicsRectItem::setStartPoint(const QPoint& point)
 void GGraphicsRectItem::setEndPoint(const QPoint& point)
 {
     m_rect.setBottomRight(point);
+}
+
+void GGraphicsRectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+{
+    //assert(false);
+    std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>();
+    style->setBrush(QBrush(Qt::yellow));
+    style->setPen(QColor(Qt::red));
+
+    setStyle(style);
+    //m_rect.setBobottomRight()
+    //update();
+   // parentWidget()->update();
+    setSelected(true);
 }
 
 //--------------------------------Point Item---------------------------------------

@@ -29,6 +29,9 @@ public:
     QPen getPen() const {return m_pen;}
     QBrush getBrush() const {return m_brush;}
     void setCurrentItem(GGraphicsItem* item);
+    QList<GGraphicsItem*> getSelectedItems() const;
+    void selectItems(const QList<GGraphicsItem*>& items);
+    void selectItems(const QList<QString>& itemNames);
 
 public slots:
  //   template<class T>
@@ -61,5 +64,15 @@ QList<T> Editor::getShapeItems() const
     }
     return shapeItems;
 }
+
+
+//--------------------------Converter Class --------------
+// convert List of QGraphicsItem to GGraphicsITem
+class Converter
+{
+public:
+    static QList<GGraphicsItem*> convert(const QList<QGraphicsItem*>& items);
+};
+
 
 #endif // COORDINATESYSTEM_H

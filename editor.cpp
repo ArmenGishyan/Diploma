@@ -11,6 +11,7 @@
 #include <QUrl>
 #include <QPushButton>
 
+#include "ggraphicsstyle.h"
 
 Editor::Editor(QWidget* parent):QWidget (parent)
 {
@@ -111,7 +112,7 @@ void Editor::dropEvent(QDropEvent* eve)
 // set Current QGraphics Item
 void Editor::setCurrentItem(GGraphicsItem* item)
 {
-    if(item && m_grScene) {
+    if(m_grView) {
         m_grView->setCurrentItem(item);
     }
 }
@@ -127,4 +128,56 @@ void Editor::clearAll()
         m_grScene->update();
         m_grScene->drawCoordinateLines();
     }
+}
+
+
+QList<GGraphicsItem*> Editor::getSelectedItems() const
+{
+    QList<GGraphicsItem*> gItems;
+    QList<QGraphicsItem*> qGraItems;
+    if(m_grScene) {
+        qGraItems = m_grScene->selectedItems();
+        for(int i = 0; i < qGraItems.size(); ++i) {
+            GGraphicsItem* item = qgraphicsitem_cast<GGraphicsItem*>(qGraItems[i]);
+            if(item) {
+                gItems.push_back(item);
+            }
+         }
+    }
+    return gItems;
+}
+
+void Editor::selectItems(const QList<QString>& itemsName)
+{
+     std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>(QPen(Qt::yellow), QBrush(QColor(Qt::green)));
+     QList<GGraphicsItem*> items = Converter::convert(m_grScene->items());
+     auto findSelection = [&itemsName, &style](GGraphicsItem* item) {
+         for(const auto& name : itemsName) {
+             if(name == QString::fromStdString(item->name())) {
+                 item->setStyle(style);
+             }
+         }};
+
+     std::for_each(items.begin(), items.end(), findSelection);
+     if(m_grScene) {
+        m_grScene->update();
+     }
+}
+
+void Editor::selectItems(const QList<GGraphicsItem*>& itemsName)
+{
+
+}
+
+
+QList<GGraphicsItem*> Converter::convert(const QList<QGraphicsItem*>& items)
+{
+    QList<GGraphicsItem*> gItems;
+    for(int i = 0; i< items.size(); ++i) {
+         GGraphicsItem* item = qgraphicsitem_cast<GGraphicsItem*>(items[i]);
+         if(item) {
+            gItems.push_back(item);
+         }
+    }
+    return gItems;
 }

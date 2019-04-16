@@ -5,6 +5,7 @@
 //#include "graphnode.h"
 #include <vector>
 #include <graph.h>
+#include "shortestpathproblem.h"
 
 class MainWindow;
 class QRect;
@@ -20,7 +21,7 @@ public:
     Graph<NodeValueType>* createGraph(const std::vector<ShapesType>& vecOfShapes) const;
     std::vector<Rectangle> getRectanglesFromGui() const;
     template<class ShapesType>
-    std::vector<ShapesType> findPath() const;
+    std::vector<std::string> findPath(const std::string& firstName, const std::string& secondName) const;
 
 private:
     MainWindow* m_mainWindow;
@@ -68,13 +69,21 @@ Graph<NodeValueType>* Engine::createGraph(const std::vector<ShapeType>& vecOfSha
 }
 
 template <class ShapesType>
-std::vector<ShapesType> Engine::findPath() const
+std::vector<std::string> Engine::findPath(const std::string& firstName, const std::string& secondName) const
 {
     std::vector<ShapesType> vectorOfShapes = getRectanglesFromGui();
     Graph<int>* graph = createGraph<int, ShapesType>(vectorOfShapes);
-    int x = 0;
-    ++x;
-    return std::vector<ShapesType>();
+
+    Node<T>* first = graph->getNode(firstName);
+    Node<T>* second = graph->getNode(secondName);
+
+    std::vector<Node<T>*> vec = ShortestPathProblem<int>::shortestPath(*graph, first, second);
+    std::vector<std::string> vecOfPathShapesName;
+    vecOfPathShapesName.reserve(vec.size());
+    for(const Node<T>* item : vec) {
+        vecOfPathShapesName.push_back(item->name());
+    }
+    return vecOfPathShapesName; // std::vector<ShapesType>();
 }
 
 #endif // ENGINE_H

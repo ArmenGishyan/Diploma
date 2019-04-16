@@ -15,6 +15,7 @@ class GGraphicsItem : public QGraphicsItem
 public:
     GGraphicsItem(std::string name, QGraphicsItem * parent = nullptr);
     GGraphicsItem(QGraphicsItem * parent = nullptr);
+    virtual ~GGraphicsItem(){}
     virtual GGraphicsItem* create() = 0;
     virtual void setStartPoint(const QPoint& point) = 0;
     virtual void setEndPoint(const QPoint& point) = 0;
@@ -22,8 +23,9 @@ public:
     inline void setStyle(std::shared_ptr<GGraphicsStyle> style) { m_style = style;}
     inline std::shared_ptr<GGraphicsStyle> style() const {return m_style;}
     inline void setName(const QString& name) {m_name = name.toStdString();}
-    std::string name() const ; //const {
-        //return m_name;}
+    std::string name() const ;
+    static void setSelectionStyle(std::unique_ptr<GGraphicsStyle> style);
+    static std::unique_ptr<GGraphicsStyle> getSelectionStyle();
 
 protected:
     std::string m_name;
@@ -47,6 +49,7 @@ public:
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr) override;
     QRectF rect() const {return m_rect;}
     void setRect(QRectF rect) {m_rect = rect.toRect();}
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
 private:
     QRect m_rect;

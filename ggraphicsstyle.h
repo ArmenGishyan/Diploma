@@ -7,7 +7,8 @@
 class GGraphicsStyle
 {
 public:
-    GGraphicsStyle(QPen pen = QPen(), QBrush brush = QBrush());
+    GGraphicsStyle(QPen pen = QPen(QColor(Qt::red)), QBrush brush = QBrush(QColor(Qt::blue)));
+    ~GGraphicsStyle();
     QPen pen(){return  m_pen;}
     QBrush brush(){return m_brush;}
     void setPen(QPen pen) { m_pen = pen;}

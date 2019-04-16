@@ -30,6 +30,7 @@ class GraphicsScene : public QGraphicsScene
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     //void addItem() = delete;
 
+private:
 };
 
 class GraphicsView : public QGraphicsView
@@ -55,9 +56,11 @@ private:
     void mouseReleaseEvent(QMouseEvent* ev) override;
     void mousePressEvent(QMouseEvent* ev) override;
     void mouseMoveEvent(QMouseEvent* ev) override;
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 //members
 private:
+    QStack<GGraphicsItem*> m_selectedItem;
     GGraphicsItem* m_currentItem;
     GGraphicsItem* m_drawableItem;
     GraphicsScene* m_gScene;
