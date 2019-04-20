@@ -8,6 +8,7 @@
 
 Engine::Engine()
 {
+    m_priority = SelectEdgeWeight::GraphWeightPriority::OverLapSquare;
     m_mainWindow = new MainWindow;
     m_mainWindow->show();
     m_mainWindow->initEngine(this);

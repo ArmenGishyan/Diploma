@@ -35,6 +35,7 @@ private:
     void createCommandLineDockW();
     void createActionToolBar();
     void initEditor();
+    void createWeigthPriorityMenu();
 
 
 public slots:
@@ -42,6 +43,7 @@ public slots:
     void styleActionClicked(QAction*);
     void handleshortedPathAction();
     void openClicked();
+    void selectWeightPriority();
 
   //  void handleDrawRect();
   //  void handleDrawLine();

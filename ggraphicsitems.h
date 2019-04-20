@@ -25,7 +25,7 @@ public:
     inline void setName(const QString& name) {m_name = name.toStdString();}
     std::string name() const ;
     static void setSelectionStyle(std::unique_ptr<GGraphicsStyle> style);
-    static std::unique_ptr<GGraphicsStyle> getSelectionStyle();
+    static const std::unique_ptr<GGraphicsStyle>* getSelectionStyle();
 
 protected:
     std::string m_name;

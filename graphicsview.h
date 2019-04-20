@@ -20,12 +20,17 @@
 
 class GraphicsScene : public QGraphicsScene
 {
-  public:
+    Q_OBJECT
+public:
     GraphicsScene(QObject* parent = nullptr);
     void mousePressEvent(QGraphicsSceneMouseEvent* ev) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* ev) override;
     QVector<QRect> getRects() const;
     void drawCoordinateLines();
+    bool eventFilter(QObject* object, QEvent* event) override;
+
+public slots:
+    void handleFocusItemChanged(QGraphicsItem *newFocusItem, QGraphicsItem *oldFocusItem, Qt::FocusReason reason);
 
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     //void addItem() = delete;

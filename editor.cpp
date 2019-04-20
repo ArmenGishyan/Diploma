@@ -17,7 +17,6 @@ Editor::Editor(QWidget* parent):QWidget (parent)
 {
     m_pen = QPen();
     m_brush = QBrush();
-
    // setFixedSize(QSize(300,300));
    // setFixedSize(parent->width(), parent->height());
     qDebug()<<"parent  width = "<<parent->width();
@@ -25,6 +24,7 @@ Editor::Editor(QWidget* parent):QWidget (parent)
     m_grScene  = new GraphicsScene(this);
     m_grView = new GraphicsView(m_grScene, this);
     m_grScene->setSceneRect(0,0,100, 100);
+    installEventFilter(m_grScene);
     //m_grScene->setSceneRect(0,0,this->width(), this->height());
     setStyleSheet("background-color: #F08080");
 
@@ -109,6 +109,14 @@ void Editor::dropEvent(QDropEvent* eve)
     QWidget::dropEvent(eve);
 }
 
+void Editor::setPen(const QPen& pen)
+{
+    m_pen = pen;
+    //std::shared_ptr<GGraphicsStyle> oldStyle = //GGraphicsItem::style();
+   // std::shared_ptr<GGraphicsStyle> style = std::shared_ptr<GGraphicsStyle>()
+   // GGraphicsItem::setStyle()
+}
+void Editor::setBrush(const QBrush& brush) {m_brush = brush;}
 // set Current QGraphics Item
 void Editor::setCurrentItem(GGraphicsItem* item)
 {
@@ -149,7 +157,7 @@ QList<GGraphicsItem*> Editor::getSelectedItems() const
 
 void Editor::selectItems(const QList<QString>& itemsName)
 {
-     std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>(QPen(Qt::yellow), QBrush(QColor(Qt::green)));
+     std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>(GGraphicsItem::getSelectionStyle()->get()->pen(), GGraphicsItem::getSelectionStyle()->get()->brush());
      QList<GGraphicsItem*> items = Converter::convert(m_grScene->items());
      auto findSelection = [&itemsName, &style](GGraphicsItem* item) {
          for(const auto& name : itemsName) {

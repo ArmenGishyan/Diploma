@@ -6,6 +6,7 @@
 #include <vector>
 #include <graph.h>
 #include "shortestpathproblem.h"
+#include "selectedgeweight.h"
 
 class MainWindow;
 class QRect;
@@ -22,10 +23,16 @@ public:
     std::vector<Rectangle> getRectanglesFromGui() const;
     template<class ShapesType>
     std::vector<std::string> findPath(const std::string& firstName, const std::string& secondName) const;
+    void setWeightPriority(SelectEdgeWeight::GraphWeightPriority priority) {m_priority = priority;}
+    template<class T>
+    int calculateWeight(const T& shape1, const T& shape2) const;
 
 private:
     MainWindow* m_mainWindow;
+    SelectEdgeWeight::GraphWeightPriority m_priority;
 };
+
+Q_DECLARE_METATYPE(SelectEdgeWeight::GraphWeightPriority);
 
 template<class NodeValueType, class ShapeType>
 Graph<NodeValueType>* Engine::createGraph(const std::vector<ShapeType>& vecOfShapes) const
@@ -49,18 +56,15 @@ Graph<NodeValueType>* Engine::createGraph(const std::vector<ShapeType>& vecOfSha
                nodePtr = new Node<T>(vecOfShapes[j].name());
                graph->addNode(nodePtr);
            }
-           QRectF  intersectRect = rect.squareOfOverlapTest(&vecOfShapes[j]);
-           int intersectSquare = static_cast<int>(intersectRect.width() * intersectRect.height());
-           intersectSquare /= 300;
-
-           if(intersectSquare == 0)
+           int weight = calculateWeight(rect, vecOfShapes[j]);
+           if(weight == 0)
                continue;
             std::string nameFirst = rect.name();
             std::string nameSecond = vecOfShapes[j].name();
-            bool isConnect = graph->connNodes(nameFirst, nameSecond, intersectSquare);
+            bool isConnect = graph->connNodes(nameFirst, nameSecond, weight);
             if(!isConnect) {
                 qDebug()<<"Shapes name "<<QString::fromStdString(nameFirst) << QString::fromStdString(nameSecond) <<"/n";
-                assert(isConnect && "Cant connaect " ); //+ rect.name() && vecOfShapes[j] + " !!! ");
+                assert(isConnect && "Cant connect " );
             }
         }
     }
@@ -86,4 +90,18 @@ std::vector<std::string> Engine::findPath(const std::string& firstName, const st
     return vecOfPathShapesName; // std::vector<ShapesType>();
 }
 
+template<class T>
+int Engine::calculateWeight(const T& shape1, const T& shape2) const
+{
+    QRectF  intersectRect = shape1.squareOfOverlapTest(&shape2);
+    int weightOfGraphVertex = 0;
+    weightOfGraphVertex = static_cast<int>(intersectRect.width() * intersectRect.height());
+    if(m_priority == SelectEdgeWeight::GraphWeightPriority::MargeSauare) {
+        int margeSquare = shape1.square() + shape2.square();
+        weightOfGraphVertex = margeSquare - weightOfGraphVertex;
+    }
+
+    weightOfGraphVertex /= 300;
+    return weightOfGraphVertex;
+}
 #endif // ENGINE_H

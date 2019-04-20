@@ -36,8 +36,8 @@ void GGraphicsItem::setSelectionStyle(std::unique_ptr<GGraphicsStyle> style) {
     m_styleInSelection = std::move(style);
 }
 
-std::unique_ptr<GGraphicsStyle> GGraphicsItem::getSelectionStyle() {
-    return std::move(m_styleInSelection);
+const std::unique_ptr<GGraphicsStyle>* GGraphicsItem::getSelectionStyle() {
+    return &m_styleInSelection;
 }
 
 //-------------------------------------------------Rect Item------------------------------
@@ -168,7 +168,10 @@ void GGraphicsPointItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 //------------------------------------------GGraphics Line Item------------------------
 
 GGraphicsLineItem::GGraphicsLineItem(QGraphicsItem* parent):GGraphicsItem (parent)
-{}
+{
+    m_start = QPoint();
+    m_end = QPoint();
+}
 
 GGraphicsLineItem* GGraphicsLineItem::create()
 {
@@ -178,6 +181,7 @@ GGraphicsLineItem* GGraphicsLineItem::create()
 void GGraphicsLineItem::setStartPoint(const QPoint& point)
 {
     m_start = point;
+    m_end = point;
 }
 
 void GGraphicsLineItem::setEndPoint(const QPoint& point)

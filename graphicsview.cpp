@@ -52,12 +52,18 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
         }
     }
 
-
     qDebug()<<"GraphicsView::mouseReleaseEvent size = "<<items().size();
     QGraphicsView::mouseReleaseEvent(ev);
 }
 void GraphicsView::mousePressEvent(QMouseEvent* ev)
 {
+   // QPoint origin = ev->pos();
+   // QRubberBand* rubberBand = nullptr;
+   // if (!rubberBand)
+   //     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+   // rubberBand->setGeometry(QRect(origin, QSize()));
+   // rubberBand->show();
+
     qDebug()<<"Current item = "<<m_currentItem;
     if(!m_currentItem) {
         m_drawableItem = nullptr;
@@ -72,11 +78,7 @@ void GraphicsView::mousePressEvent(QMouseEvent* ev)
             m_drawableItem->setName("Shape_"+QString::number(items.count()));
             m_gScene->addItem(m_drawableItem);
         }
-
-
-
     }
-
 
     qDebug()<<"GraphicsView::mousePressEvent";
     QGraphicsView::mousePressEvent(ev);
@@ -114,11 +116,13 @@ void GraphicsView::setCurrentItem(GGraphicsItem* item)
 
 void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
 {
-
+    auto items = m_gScene->selectedItems();
     if(m_gScene) {
         QList<QGraphicsItem*> items = m_gScene->selectedItems();
-        m_gScene->update();
-        m_selectedItem.push(qgraphicsitem_cast<GGraphicsItem*>(items.front()));
+        if(!items.empty()) {
+            m_gScene->update();
+            m_selectedItem.push(qgraphicsitem_cast<GGraphicsItem*>(items.front()));
+        }
 
         for(int i=0;i<items.size(); ++i) {
             items[i]->setSelected(true);
@@ -132,18 +136,19 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
 //---------------------------------------------------------------------GGraphicsScene----------------
 GraphicsScene::GraphicsScene(QObject* parent):QGraphicsScene (parent)
 {
+    assert(connect(this, SIGNAL(focusItemChanged(QGraphicsItem*, QGraphicsItem*, Qt::FocusReason)), this, SLOT(handleFocusItemChanged(QGraphicsItem*, QGraphicsItem*, Qt::FocusReason))));
     drawCoordinateLines();
 }
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
     qDebug()<<"mousePressEvent";
-    QGraphicsScene::mousePressEvent(ev);
+    //QGraphicsScene::mousePressEvent(ev);
 }
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 {
     qDebug()<<"mouseReleaseEvent";
-    QGraphicsScene::mouseReleaseEvent(ev);
+    //QGraphicsScene::mouseReleaseEvent(ev);
 }
 
 QVector<QRect> GraphicsScene::getRects() const
@@ -164,4 +169,17 @@ void GraphicsScene::drawCoordinateLines()
    // addLine(QLine(0,0, 0, 100), QPen(QColor(Qt::yellow)));
 }
 
+void GraphicsScene::handleFocusItemChanged(QGraphicsItem *newFocusItem, QGraphicsItem *oldFocusItem, Qt::FocusReason reason)
+{
+    qDebug()<<"------------------------------------------------GraphicsScene::handleFocusItemChanged";
+}
 
+bool GraphicsScene::eventFilter(QObject* object, QEvent* event)
+{
+    //assert(false);
+    if(event->type() == QEvent::GraphicsSceneMousePress || event->type() == QEvent::GraphicsSceneMouseRelease) {
+        //assert(false);
+        return true;
+    }
+    return false;
+}

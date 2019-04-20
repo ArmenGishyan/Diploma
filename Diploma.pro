@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets qml
 
 TARGET = Diploma
 TEMPLATE = app
@@ -36,7 +36,9 @@ SOURCES += \
     ggraphicsshapesitem.cpp \
     ggraphicsitems.cpp \
     dockwidgets.cpp \
-    ggraphicsstyle.cpp
+    ggraphicsstyle.cpp \
+    readshapesfromfile.cpp \
+    selectedgeweight.cpp
 
 HEADERS += \
     engine.h \
@@ -53,7 +55,9 @@ HEADERS += \
     ggraphicsitems.h \
     dockwidgets.h \
     ggraphicsstyle.h \
-    graphnode.h
+    graphnode.h \
+    readshapesfromfile.h \
+    selectedgeweight.h
 
 FORMS += \
         mainwindow.ui

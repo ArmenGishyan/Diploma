@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenuBar();
     createToolBar();
     createFileMenu();
+    createWeigthPriorityMenu();
     createStyleToolBar();
 
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
@@ -97,7 +98,8 @@ void MainWindow::createFileMenu()
 
 void MainWindow::createDrawMenu()
 {
-
+    QMenu *edit = new QMenu;
+    edit->addAction("");
 }
 
 void MainWindow::createStyleToolBar()
@@ -188,3 +190,36 @@ void MainWindow::openClicked()
 {
     qDebug()<<"open Clicked";
 }
+
+
+void MainWindow::createWeigthPriorityMenu()
+{
+    QMenu* pathSolution = menuBar()->addMenu("Path");
+    QAction* weightPriority = new QAction("Weight Priority");
+    assert(connect(weightPriority, SIGNAL(triggered(bool)), this, SLOT(selectWeightPriority())));
+
+    pathSolution->addAction(weightPriority);
+}
+
+void MainWindow::selectWeightPriority()
+{
+    SelectEdgeWeight* weightPriority = new SelectEdgeWeight(this);
+    auto returnCode = weightPriority->exec();
+    if (returnCode == QDialog::Accepted) {
+         m_engine->setWeightPriority(weightPriority->getSelectedType());
+    } else {
+        m_engine->setWeightPriority(weightPriority->getDefault());
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

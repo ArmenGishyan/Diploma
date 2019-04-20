@@ -21,8 +21,8 @@ public:
     void dragMoveEvent(QDragMoveEvent* event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent* event) override;
-    void setPen(QPen pen) {m_pen = pen;}
-    void setBrush(QBrush brush) {m_brush = brush;}
+    void setPen(const QPen& pen);
+    void setBrush(const QBrush& brush);
     //void setSenceRect(const QRect& rect) {m_grScene->setSceneRect(rect);}
     template<class T>
     QList<T> getShapeItems() const;

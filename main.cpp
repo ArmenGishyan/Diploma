@@ -9,16 +9,24 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QColorDialog>
+#include <QtQml/QJSValue>
+#include <QQmlEngine>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QQmlComponent>
+#include <QVariantList>
+#include <stack>
+#include <set>
 
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Engine engine;
-    //engine.createGraph<int, Rectangle>();
-    //engine.findPath<Rectangle>();
-   // MainWindow w;
-   // w.show();
+  //  engine.createGraph<int, Rectangle>();
+  //  engine.findPath<Rectangle>();
+  //  MainWindow w;
+  //  w.show();
 
 	Graph<int> obj;
     Node<int>* ccA = new Node<int>("A");
@@ -117,5 +125,22 @@ int main(int argc, char *argv[])
 //    std::cout << "\n-----------------print--------------------- " << std::endl;
    // std::vector<int> vec34 = {1,2,3,4,5,6,7};
    // std::remove(std::find(vec34.begin(), vec34.end(), 3), vec.end());
+
+
+      // qmlRegisterType<Person>("People", 1,0, "Person");
+
+    //  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    //  QQmlApplicationEngine qmengine;
+    //  QVariantList rectlist;
+    //  rectlist<<QRect{50, 30, 100, 100}
+    //          << QRect{200, 20, 30, 30}
+    //          <<QRect{300, 300, 200, 33}
+    //          <<QRect{400, 23, 44, 55};
+    //  qmengine.rootContext()->setContextProperty("rectlist", rectlist);
+    //  qmengine.load(QUrl(QStringLiteral("qrc:/example.qml")));
+    //  if (qmengine.rootObjects().isEmpty())
+      //        return -1;
+
+
     return a.exec();
 }
