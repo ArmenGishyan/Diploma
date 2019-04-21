@@ -46,12 +46,10 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
         }
     }
 
-    qDebug()<<"GraphicsView::mouseReleaseEvent size = "<<items().size();
     QGraphicsView::mouseReleaseEvent(ev);
 }
 void GraphicsView::mousePressEvent(QMouseEvent* ev)
 {
-    qDebug()<<"Current item = "<<m_currentItem;
     if(!m_currentItem) {
         m_drawableItem = nullptr;
     }
@@ -59,7 +57,6 @@ void GraphicsView::mousePressEvent(QMouseEvent* ev)
     if(m_currentItem &&ev->buttons() == Qt::LeftButton) {
         m_drawableItem = m_currentItem->create();
         m_drawableItem->setStartPoint(mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint());
-        qDebug()<<"Scence rect = "<<scene()->sceneRect();
         if(m_gScene) {
             QList<QGraphicsItem*> items = m_gScene->items();
             m_drawableItem->setName("Shape_"+QString::number(items.count()));
@@ -67,22 +64,21 @@ void GraphicsView::mousePressEvent(QMouseEvent* ev)
         }
     }
 
-    qDebug()<<"GraphicsView::mousePressEvent";
     QGraphicsView::mousePressEvent(ev);
 }
 void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
 {
     if(m_drawableItem) {
         if(ev->buttons() == Qt::LeftButton) {
-            qDebug()<<"inside if";
             QPoint point = (mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint()); // + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
             QList<QPoint> itemsList;
             itemsList << point;
             m_drawableItem->changeSize(point);
             update();
         } else {
-            QPainter painter(this);
-            painter.drawText(ev->pos(), QString::number(ev->pos().x())+", " + QString::number(ev->pos().y()));
+            //QPainter painter(this);
+
+           // painter.drawText(ev->pos(), QString::number(ev->pos().x())+", " + QString::number(ev->pos().y()));
 
         }
     }
@@ -91,14 +87,13 @@ void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
 
 void GraphicsView::paintEvent(QPaintEvent* ev)
 {
-   // qDebug()<<"--------------------------------------------------------------GraphicsView paint event";
     QGraphicsView::paintEvent(ev);
-    QPainter painter(this);
-    QPen pen;
-    pen.setWidth(5);
-    pen.setColor(QColor(Qt::red));
-    painter.setPen(pen);
-    painter.drawLine(QPoint(0,0), QPoint(500,500));
+   // QPainter painter(this);
+   // QPen pen;
+   // pen.setWidth(5);
+   // pen.setColor(QColor(Qt::red));
+   // painter.setPen(pen);
+   // painter.drawLine(QPoint(0,0), QPoint(500,500));
 
 }
 
@@ -109,7 +104,6 @@ GGraphicsItem* GraphicsView::getCurrentItem() const
 
 void GraphicsView::setCurrentItem(GGraphicsItem* item)
 {
-    qDebug()<<"GraphicsScene::setCurrentItem";
     delete m_currentItem;
     m_currentItem = item;
 }
@@ -121,7 +115,6 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
         return;
     QPoint pos = event->pos();
     QGraphicsItem* item = itemAt(mapToScene(pos).toPoint());
-    qDebug()<<"event pos =------------------------------------------------------------------------ "<<event->pos();
     GGraphicsItem* gItem = qgraphicsitem_cast<GGraphicsItem*>(item);
     if(gItem) {
         gItem->setItemSelected(!gItem->isSelected());
@@ -130,7 +123,6 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
        m_gScene->update();
     }
 
-    qDebug()<<"GraphicsView::mouseDoubleClickEvent";
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
@@ -160,14 +152,19 @@ void GraphicsView::visitAllItems(const std::function<void(GGraphicsItem*)>& func
         gItem = qgraphicsitem_cast<GGraphicsItem*>(items[i]);
         if(gItem) {
            func(gItem);
+           qDebug()<< "inside" << "items selected = "<<gItem->isSelected();
         }
     }
 }
 
 void GraphicsView::selectUnselectAll(bool select)
 {
+    qDebug()<<"GraphicsView::selectUnselectAll";
     auto selectUnselect = [select](GGraphicsItem* item) -> void {item->setSelected(select);};
     visitAllItems(selectUnselect);
+    if(m_gScene) {
+       m_gScene->update();
+    }
 }
 
 //---------------------------------------------------------------------GGraphicsScene----------------
@@ -179,12 +176,10 @@ GraphicsScene::GraphicsScene(QObject* parent):QGraphicsScene (parent)
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
-    qDebug()<<"mousePressEvent";
     //QGraphicsScene::mousePressEvent(ev);
 }
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 {
-    qDebug()<<"mouseReleaseEvent";
     //QGraphicsScene::mouseReleaseEvent(ev);
 }
 
@@ -197,7 +192,6 @@ QVector<QRect> GraphicsScene::getRects() const
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    qDebug()<<"vfdbvjdbfvvbdfvdbvdbvdvbdjfvdjbvdvjdbvjdb";
 }
 
 void GraphicsScene::drawCoordinateLines()
@@ -212,7 +206,6 @@ void GraphicsScene::drawCoordinateLines()
 
 void GraphicsScene::handleFocusItemChanged(QGraphicsItem *newFocusItem, QGraphicsItem *oldFocusItem, Qt::FocusReason reason)
 {
-    qDebug()<<"------------------------------------------------GraphicsScene::handleFocusItemChanged";
 }
 
 //bool GraphicsScene::eventFilter(QObject* object, QEvent* event)

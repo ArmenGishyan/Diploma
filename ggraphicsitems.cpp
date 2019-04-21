@@ -28,7 +28,6 @@ GGraphicsItem::GGraphicsItem(std::string name, QGraphicsItem * parent): GGraphic
 std::string GGraphicsItem::name() const
 {
     try {
-        qDebug()<<QString::fromStdString(m_name);
         return  m_name;
     } catch (...) {
         return "";
@@ -117,7 +116,6 @@ void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem
 
 void GGraphicsRectItem::changeSize(const QPoint& points)
 {
-    qDebug()<<"-------------------GGraphicsRectItem::changeSize";
     m_rect.setBottomRight(points);
 }
 

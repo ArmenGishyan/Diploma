@@ -10,5 +10,4 @@ GGraphicsStyle::GGraphicsStyle(QPen pen, QBrush brush)
 
 GGraphicsStyle::~GGraphicsStyle()
 {
-    qDebug()<<"GGraphicsStyle::~GGraphicsStyle";
 }

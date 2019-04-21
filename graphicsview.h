@@ -60,7 +60,6 @@ private slots:
     {
         QPaintEvent event(QRect(10,10,50,50));
         QApplication::sendEvent(this, &event);
-        qDebug()<<"event sended";
     }
 
 private:

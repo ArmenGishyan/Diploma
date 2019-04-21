@@ -43,6 +43,7 @@ private slots:
     void styleActionClicked(QAction*);
     void handleshortedPathAction();
     void openClicked();
+    void saveClicked();
     void selectWeightPriority();
     void twoDestinition();
 

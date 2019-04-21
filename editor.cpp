@@ -25,15 +25,13 @@ Editor::Editor(QWidget* parent):QWidget (parent)
     setStyleSheet("background-color: #F08080");
 
     QHBoxLayout* lay = new QHBoxLayout;
-    qDebug()<<"View rect = "<<m_grView->rect();
-    qDebug()<<"Scene rect = "<<m_grScene->sceneRect();
     lay->addWidget(m_grView);
     setLayout(lay);
 }
 
 void Editor::paintEvent(QPaintEvent* p)
 {
-    QPainter painter(this);
+   // QPainter painter(this);
    // painter.drawLine(QPoint(0,0), QPoint(50,0));
    // painter.drawLine(QPoint(0,0), QPoint(0,50));
    // m_grScene->update();
@@ -42,7 +40,6 @@ void Editor::paintEvent(QPaintEvent* p)
 
 //void Editor::resizeEvent(QResizeEvent *event)
 //{
-//    qDebug()<<"--------------"<<"Editor::resizeEvent";
 //    m_grView->setFixedSize(this->width(), this->height());
 //    m_grScene->setSceneRect(this->rect());
 //    //QWidget::resizeEvent(event);
@@ -52,12 +49,11 @@ void Editor::mouseMoveEvent(QMouseEvent* ev)
 {
     QWidget::mouseMoveEvent(ev);
     QPoint po = ev->pos();
-    QPainter ptr(this);
-    ptr.setPen(Qt::green);
+    //QPainter ptr(this);
+    //ptr.setPen(Qt::green);
 
-    ptr.drawPoint(po);
+    //ptr.drawPoint(po);
 
-    qDebug()<<"mouse move";
 }
 
 void Editor::mousePressEvent(QMouseEvent* event)
@@ -78,7 +74,6 @@ void Editor::mousePressEvent(QMouseEvent* event)
 
 void Editor::dragMoveEvent(QDragMoveEvent *event)
 {
-    qDebug()<<"dragMoveEvent";
     if(event->mimeData()->hasFormat("text/plain") /*&& event->answerRect().intersects(drowFrame->)*/)
         event->acceptProposedAction();
 
@@ -87,7 +82,6 @@ void Editor::dragMoveEvent(QDragMoveEvent *event)
 
 void Editor::dragEnterEvent(QDragEnterEvent* event)
 {
-    qDebug()<<"dragEnterEvent";
     if(event->mimeData()->hasUrls())
         event->acceptProposedAction();
 
@@ -96,10 +90,8 @@ void Editor::dragEnterEvent(QDragEnterEvent* event)
 
 void Editor::dropEvent(QDropEvent* eve)
 {
-    qDebug()<<"dropEvent";
     if(eve->mimeData()->hasUrls()) {
        // foreach(QUrl url, eve->mimeData()->hasUrls()) {
-       //     qDebug()<<"hello";
        // }
     }
     QWidget::dropEvent(eve);
@@ -115,7 +107,6 @@ void Editor::setCurrentItem(GGraphicsItem* item)
 
 void Editor::clearAll()
 {
-    qDebug()<<"Editor::clear";
     if(m_grScene) {
         auto selItems = m_grScene->selectedItems();
         int i = 0;

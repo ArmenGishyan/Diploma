@@ -53,14 +53,12 @@ struct CompareNodes
 {
     bool operator()(const T& node1, const T& node2) const
     {
-        qDebug()<<"Compare Work";
        // assert(false);
         return  node1.second < node2.second;
     }
 
    // bool operator()(Node<T>* const& node1, Node<T>* const& node2) const
    // {
-   //     qDebug()<<"Compare Work";
    //     //assert(false);
    //     return true;//node1->second < node2->second;
    // }

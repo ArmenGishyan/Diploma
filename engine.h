@@ -61,7 +61,6 @@ Graph<NodeValueType>* Engine::createGraph(const std::vector<ShapeType>& vecOfSha
             std::string nameSecond = vecOfShapes[j].name();
             bool isConnect = graph->connNodes(nameFirst, nameSecond, weight);
             if(!isConnect) {
-                qDebug()<<"Shapes name "<<QString::fromStdString(nameFirst) << QString::fromStdString(nameSecond) <<"/n";
                 assert(isConnect && "Cant connect " );
             }
         }

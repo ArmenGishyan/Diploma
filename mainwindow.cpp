@@ -54,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    qDebug()<<"Destructor";
     m_menuBar->deleteLater();
    // delete ui;
 }
@@ -104,14 +103,16 @@ void MainWindow::createMenuBar()
 
 void MainWindow::createFileMenu()
 {
-    m_fileMenu = menuBar()->addMenu("File");
-    m_fileMenu->addAction(new QAction("New"));
-    m_fileMenu->addAction(new QAction("Save As"));
+    //m_fileMenu = menuBar()->addMenu("File");
+    //m_fileMenu->addAction(new QAction("New"));
+    //QAction* openAction = new QAction("Open");
+    //m_fileMenu->addAction(openAction);
+    //QAction* saveAction = new QAction("Save");
+    //m_fileMenu->addAction(saveAction);
+    //m_fileMenu->addAction(new QAction("Save As"));
+    //assert(connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openClicked())));
+    //assert(connect(saveAction, SIGNAL(triggered(bool)), this, SLOT(saveClicked())));
 
-    QAction* openAction = new QAction("Open");
-    assert(connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openClicked())));
-    m_fileMenu->addAction(openAction);
-    m_fileMenu->addAction(new QAction("Save"));
 
     QList<QAction*> it = m_fileMenu->actions();
 }
@@ -146,7 +147,6 @@ void MainWindow::initEditor()
 
 void MainWindow::actionClicked(QAction* action)
 {
-    qDebug()<<"actionClicked";
     GAction* gaction = dynamic_cast<GAction*>(action);
     if(gaction) {
         m_editor->setCurrentItem(gaction->getObject());
@@ -197,10 +197,8 @@ void MainWindow::createActionToolBar()
 
 void MainWindow::handleshortedPathAction()
 {
-    qDebug()<<"handleshortedPathAction";
     if(m_engine && m_editor) {
         QList<GGraphicsItem*> items = m_editor->getSelectedItems();
-        qDebug()<<"selected items count "<<items.size();
         if(!(items.size() == 2)) {
             WrongSelectionCount error(GuiMessageWirter::Priority::ERROR, "Please Select 2 shape before click on the button");
             error.execute();
@@ -222,7 +220,7 @@ void MainWindow::openClicked()
 {
     //assert(false);
     QDir filePath(QCoreApplication::applicationDirPath());
-    QString path = QFileDialog::getOpenFileName(nullptr, tr("Save"), filePath.path());
+    QString path = QFileDialog::getOpenFileName(nullptr, tr("Open"), filePath.path());
     ReadWriteFile file(path.toStdString(), std::ios::in);
     std::vector<std::string> lines = file.getLinesFromFile();
     if(m_editor) {
@@ -231,10 +229,22 @@ void MainWindow::openClicked()
         m_editor->addShapes(shp);
         m_editor->update();
     }
-    qDebug()<<"open Clicked";
 }
 
+void MainWindow::saveClicked()
+{
+    QDir filePath(QCoreApplication::applicationDirPath());
+    QString path = QFileDialog::getSaveFileName(nullptr, tr("Save"), filePath.path());
+    ReadWriteFile file(path.toStdString(), std::ios::in);
+    std::vector<std::string> lines = file.getLinesFromFile();
+    if(m_editor) {
+        ParseText text(lines);
+        auto shp = text.parseShapes();
+        m_editor->addShapes(shp);
+        m_editor->update();
+    }
 
+}
 void MainWindow::createWeigthPriorityMenu()
 {
     QMenu* pathSolution = menuBar()->addMenu("Path");
@@ -272,7 +282,6 @@ void MainWindow::twoDestinition()
 {
    if(m_editor) {
        m_editor->toDefaultState();
-       m_editor->update();
    }
    SelectDestinitions* dest = new SelectDestinitions;
    dest->setModal(true);
