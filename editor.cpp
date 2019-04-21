@@ -141,18 +141,12 @@ void Editor::clearAll()
 
 QList<GGraphicsItem*> Editor::getSelectedItems() const
 {
-    QList<GGraphicsItem*> gItems;
-    QList<QGraphicsItem*> qGraItems;
-    if(m_grScene) {
-        qGraItems = m_grScene->selectedItems();
-        for(int i = 0; i < qGraItems.size(); ++i) {
-            GGraphicsItem* item = qgraphicsitem_cast<GGraphicsItem*>(qGraItems[i]);
-            if(item) {
-                gItems.push_back(item);
-            }
-         }
+    if(m_grView) {
+        auto items = m_grView->getSelectedItems();
+        return m_grView->getSelectedItems();
     }
-    return gItems;
+
+    return QList<GGraphicsItem*>();
 }
 
 void Editor::selectItems(const QList<QString>& itemsName)

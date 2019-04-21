@@ -1,6 +1,6 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include <QMenuBar>
+#include <QToolBar>
 #include <QMenu>
 #include <QDebug>
 #include <QIcon>
@@ -11,11 +11,13 @@
 #include "engine.h"
 #include <assert.h>
 #include <QApplication>
+#include <guierrors.h>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow)
+    QMainWindow(parent)/*, ui(new Ui::MainWindow)*/
 {
-    ui->setupUi(this);
+   // ui->setupUi(this);
     createMenuBar();
     createToolBar();
     createFileMenu();
@@ -46,7 +48,7 @@ MainWindow::~MainWindow()
 {
     qDebug()<<"Destructor";
     m_menuBar->deleteLater();
-    delete ui;
+   // delete ui;
 }
 
 void MainWindow::createToolBar()
@@ -172,9 +174,13 @@ void MainWindow::handleshortedPathAction()
 
     if(m_engine && m_editor) {
         QList<GGraphicsItem*> items = m_editor->getSelectedItems();
-        if(items.empty())
+        qDebug()<<"selected items count "<<items.size();
+        if(!(items.size() == 2)) {
+            WrongSelectionCount error(GuiMessageWirter::Priority::ERROR, "Please Select 2 shape before click on the button");
+            error.execute();
             return;
-        std::vector<std::string> rects = m_engine->findPath<Rectangle>("Shape_0", items[0]->name());
+        }
+        std::vector<std::string> rects = m_engine->findPath<Rectangle>(items[0]->name(), items[1]->name());
         QList<QString> pathNames;
         for(const std::string& it : rects) {
             pathNames.push_back(QString::fromStdString(it));
@@ -212,10 +218,34 @@ void MainWindow::selectWeightPriority()
     }
 }
 
+void MainWindow::setCurrentMessage(GuiMessageWirter *message)
+{
+    delete m_currentMessage;
+    m_currentMessage = message;
+}
 
+void MainWindow::executeCurrentMessage()
+{
+    if(m_currentMessage) {
+        m_currentMessage->execute();
+    }
+}
 
+TooManySelection::TooManySelection(int count, GuiMessageWirter::Priority priority, std::string message):GuiMessageWirter (priority,message)
+{
+    m_selectionCount = count;
+}
 
+bool TooManySelection::execute()
+{
+    QMessageBox error;
+    error.setText(QString::fromStdString(m_errorMassage));
+    error.setIcon(QMessageBox::Critical);
+    error.setWindowTitle("Too Many Selection");
+    error.addButton(QMessageBox::Ok);
 
+    return true;
+}
 
 
 

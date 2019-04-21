@@ -26,8 +26,11 @@ public:
     std::string name() const ;
     static void setSelectionStyle(std::unique_ptr<GGraphicsStyle> style);
     static const std::unique_ptr<GGraphicsStyle>* getSelectionStyle();
+    bool isSelected(){return m_isSelected;}
+    bool setItemSelected(bool selected) {m_isSelected = selected;}
 
 protected:
+    bool m_isSelected;
     std::string m_name;
     std::shared_ptr<GGraphicsStyle> m_style;
     // this static member describe how item should behave when selected
@@ -49,7 +52,7 @@ public:
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr) override;
     QRectF rect() const {return m_rect;}
     void setRect(QRectF rect) {m_rect = rect.toRect();}
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+    //void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
 private:
     QRect m_rect;

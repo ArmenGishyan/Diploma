@@ -27,7 +27,7 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* ev) override;
     QVector<QRect> getRects() const;
     void drawCoordinateLines();
-    bool eventFilter(QObject* object, QEvent* event) override;
+    //bool eventFilter(QObject* object, QEvent* event) override;
 
 public slots:
     void handleFocusItemChanged(QGraphicsItem *newFocusItem, QGraphicsItem *oldFocusItem, Qt::FocusReason reason);
@@ -47,6 +47,7 @@ public:
     virtual ~GraphicsView(){}
     GGraphicsItem* getCurrentItem() const;
     void setCurrentItem(GGraphicsItem* item);
+    QList<GGraphicsItem*> getSelectedItems();
 
 private slots:
     void sendEvent()

@@ -116,22 +116,31 @@ void GraphicsView::setCurrentItem(GGraphicsItem* item)
 
 void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    auto items = m_gScene->selectedItems();
-    if(m_gScene) {
-        QList<QGraphicsItem*> items = m_gScene->selectedItems();
-        if(!items.empty()) {
-            m_gScene->update();
-            m_selectedItem.push(qgraphicsitem_cast<GGraphicsItem*>(items.front()));
-        }
-
-        for(int i=0;i<items.size(); ++i) {
-            items[i]->setSelected(true);
+    QGraphicsItem* item = itemAt(event->pos());
+    GGraphicsItem* gItem = qgraphicsitem_cast<GGraphicsItem*>(item);
+    if(gItem) {
+        gItem->setItemSelected(!gItem->isSelected());
+        if(m_gScene) {
+           m_gScene->update();
         }
     }
+
     qDebug()<<"GraphicsView::mouseDoubleClickEvent";
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
+QList<GGraphicsItem*> GraphicsView::getSelectedItems()
+{
+    QList<GGraphicsItem*> selectedItem;
+    QList<QGraphicsItem*> items = this->items();
+    for(QGraphicsItem* it : items) {
+        GGraphicsItem* gItem = qgraphicsitem_cast<GGraphicsItem*>(it);
+        if(gItem && gItem->isSelected()) {
+            selectedItem.push_back(gItem);
+        }
+    }
+    return selectedItem;
+}
 
 //---------------------------------------------------------------------GGraphicsScene----------------
 GraphicsScene::GraphicsScene(QObject* parent):QGraphicsScene (parent)
@@ -174,12 +183,12 @@ void GraphicsScene::handleFocusItemChanged(QGraphicsItem *newFocusItem, QGraphic
     qDebug()<<"------------------------------------------------GraphicsScene::handleFocusItemChanged";
 }
 
-bool GraphicsScene::eventFilter(QObject* object, QEvent* event)
-{
-    //assert(false);
-    if(event->type() == QEvent::GraphicsSceneMousePress || event->type() == QEvent::GraphicsSceneMouseRelease) {
-        //assert(false);
-        return true;
-    }
-    return false;
-}
+//bool GraphicsScene::eventFilter(QObject* object, QEvent* event)
+//{
+//    //assert(false);
+//    if(event->type() == QEvent::GraphicsSceneMousePress || event->type() == QEvent::GraphicsSceneMouseRelease) {
+//        //assert(false);
+//        return true;
+//    }
+//    return false;
+//}

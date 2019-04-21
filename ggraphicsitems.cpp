@@ -13,12 +13,14 @@ GGraphicsItem::GGraphicsItem(QGraphicsItem * parent) : QGraphicsItem(parent)
 {
     m_name = "";
     m_style = std::make_shared<GGraphicsStyle>(QColor(Qt::green));
+    m_isSelected = false;
 }
 
 GGraphicsItem::GGraphicsItem(std::string name, QGraphicsItem * parent): GGraphicsItem(parent)
 {
     m_name = name;
     m_style = std::make_shared<GGraphicsStyle>(QColor(Qt::green));
+    m_isSelected = false;
 }
 
 std::string GGraphicsItem::name() const
@@ -45,14 +47,12 @@ GGraphicsRectItem::GGraphicsRectItem(QGraphicsItem* parent):GGraphicsItem (paren
 {
     m_rect = QRect();
     setFlag(QGraphicsItem::ItemIsSelectable);
-    setSelected(true);
 }
 
 GGraphicsRectItem::GGraphicsRectItem(std::string name, QGraphicsItem* parent) : GGraphicsItem (name,parent)
 {
     m_rect = QRect();
     setFlag(QGraphicsItem::ItemIsSelectable);
-    setSelected(true);
 }
 
 GGraphicsRectItem* GGraphicsRectItem::create()
@@ -71,9 +71,22 @@ QRectF GGraphicsRectItem::boundingRect() const
 
 void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
-
-    painter->setPen(m_style->pen());
-    painter->setBrush(m_style->brush());
+    GGraphicsStyle style;
+    if(m_isSelected) {
+        auto stylePtr = GGraphicsItem::getSelectionStyle();
+        if(stylePtr) {
+           style.setPen(stylePtr->get()->pen());
+           style.setBrush(stylePtr->get()->brush());
+        }
+    } else {
+        auto stylePtr = this->style();
+        if(stylePtr) {
+           style.setPen(stylePtr->pen());
+           style.setBrush(stylePtr->brush());
+        }
+    }
+    painter->setPen(style.pen());
+    painter->setBrush(style.brush());
 
     qDebug()<<"pen = "<<painter->pen();
     qDebug()<<"brush = "<<painter->brush();
@@ -114,19 +127,20 @@ void GGraphicsRectItem::setEndPoint(const QPoint& point)
     m_rect.setBottomRight(point);
 }
 
-void GGraphicsRectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
-{
-    //assert(false);
-    std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>();
-    style->setBrush(QBrush(Qt::yellow));
-    style->setPen(QColor(Qt::red));
-
-    setStyle(style);
-    //m_rect.setBobottomRight()
-    //update();
-   // parentWidget()->update();
-    setSelected(true);
-}
+//void GGraphicsRectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+//{
+//    setItemSelected(!m_isSelected);
+//    update();
+//   // std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>();
+//   // style->setBrush(QBrush(Qt::yellow));
+//   // style->setPen(QColor(Qt::red));
+//
+//   // setStyle(style);
+//   // //m_rect.setBobottomRight()
+//   // //update();
+//   //// parentWidget()->update();
+//   // setSelected(true);
+//}
 
 //--------------------------------Point Item---------------------------------------
 GGraphicsPointItem::GGraphicsPointItem(QGraphicsItem* parent) : GGraphicsItem (parent)

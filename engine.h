@@ -11,9 +11,6 @@
 class MainWindow;
 class QRect;
 
-//template <class T>
-//class Graph;
-
 class Engine
 {
 public:

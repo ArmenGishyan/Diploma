@@ -23,6 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
+    guierrors.cpp \
     main.cpp \
     engine.cpp \
     mainwindow.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
 
 HEADERS += \
     engine.h \
+    guierrors.h \
     mainwindow.h \
     polygons.h \
     editor.h \
@@ -59,8 +61,8 @@ HEADERS += \
     readshapesfromfile.h \
     selectedgeweight.h
 
-FORMS += \
-        mainwindow.ui
+#FORMS += \
+#       mainwindow.ui
 RESOURCES += ./resources/resources.qrc
 
 # Default rules for deployment.

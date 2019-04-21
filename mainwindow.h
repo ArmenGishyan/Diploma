@@ -4,10 +4,7 @@
 #include <QMainWindow>
 #include "gaction.h"
 
-namespace Ui {
-class MainWindow;
-}
-
+class GuiMessageWirter;
 class QToolButton;
 class Editor;
 class CommandLineGui;
@@ -24,6 +21,9 @@ public:
 // public methods
     const Editor* getEditor() const {return m_editor;}
     void initEngine(Engine* engine) {m_engine = engine;}
+    void setCurrentMessage(GuiMessageWirter* message);
+    void executeCurrentMessage();
+
 
 private:
     void createToolBar();
@@ -50,7 +50,7 @@ public slots:
   //  void handleDrawPoint();
 
 private:
-    Ui::MainWindow *ui;
+    //Ui::MainWindow *ui;
     QToolBar* m_mainToolBar;
     QToolBar* m_styleToolBar;
     QToolBar* m_actionToolBar;
@@ -67,6 +67,8 @@ private:
     Editor* m_editor;
     CommandLineGui* m_commandLine;
     Engine* m_engine;
+    GuiMessageWirter* m_currentMessage;
+
 };
 
 #endif // MAINWINDOW_H
