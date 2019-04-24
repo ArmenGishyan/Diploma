@@ -19,11 +19,11 @@ Editor::Editor(QWidget* parent):QWidget (parent)
     m_brush = QBrush();
    // setFixedSize(QSize(300,300));
    // setFixedSize(parent->width(), parent->height());
-    qDebug()<<"parent  width = "<<parent->width();
-    qDebug()<<"parent height = "<<parent->height();
+    int x = this->width();
+    int y = this->height();
     m_grScene  = new GraphicsScene(this);
     m_grView = new GraphicsView(m_grScene, this);
-    m_grScene->setSceneRect(0,0,100, 100);
+    m_grScene->setSceneRect(0,0,500, 1150);
     installEventFilter(m_grScene);
     //m_grScene->setSceneRect(0,0,this->width(), this->height());
     setStyleSheet("background-color: #F08080");
@@ -38,9 +38,9 @@ Editor::Editor(QWidget* parent):QWidget (parent)
 void Editor::paintEvent(QPaintEvent* p)
 {
     QPainter painter(this);
-    painter.drawLine(QPoint(0,0), QPoint(50,0));
-    painter.drawLine(QPoint(0,0), QPoint(0,50));
-    m_grScene->update();
+   // painter.drawLine(QPoint(0,0), QPoint(50,0));
+   // painter.drawLine(QPoint(0,0), QPoint(0,50));
+   // m_grScene->update();
     QWidget::paintEvent(p);
 }
 
@@ -54,6 +54,7 @@ void Editor::paintEvent(QPaintEvent* p)
 
 void Editor::mouseMoveEvent(QMouseEvent* ev)
 {
+    QWidget::mouseMoveEvent(ev);
     QPoint po = ev->pos();
     QPainter ptr(this);
     ptr.setPen(Qt::green);
@@ -61,7 +62,6 @@ void Editor::mouseMoveEvent(QMouseEvent* ev)
     ptr.drawPoint(po);
 
     qDebug()<<"mouse move";
-    QWidget::mouseMoveEvent(ev);
 }
 
 void Editor::mousePressEvent(QMouseEvent* event)
@@ -171,6 +171,15 @@ void Editor::selectItems(const QList<GGraphicsItem*>& itemsName)
 
 }
 
+void Editor::clearSelectedItems()
+{
+    if(m_grView) {
+        QList<GGraphicsItem*> items = m_grView->getSelectedItems();
+        for(GGraphicsItem* it : items) {
+            delete it;
+        }
+    }
+}
 
 QList<GGraphicsItem*> Converter::convert(const QList<QGraphicsItem*>& items)
 {

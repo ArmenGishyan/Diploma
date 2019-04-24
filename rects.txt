@@ -1,14 +1,4 @@
-Rectange {
-	name : "Shape_3"
-	x : 10
-	y : 20
-	borderColor : blue
-	fillcolor : red
-}
-
-QColor {word}
-
-Shape{Rect{50, 30, 100, 100}, Name{"Shape_1"}, Color{}});
-Shape{Rect{200, 20, 30, 30 }, Name{"Shape_2"}, Color{}});
-Shape{Rect{300, 300, 200,33}, Name{"Shape_3"}, Color{}});
-Shape{Rect{400, 23, 44, 55 }, Name{"Shape_4"}, Color{}});
+Shape({Rect{50, 30, 100, 100}; Name{"Shape_1"}; Color{red, green}});
+Shape({Rect{200, 20, 30, 30 }; Name{"Shape_2"}; Color{red, green}});
+Shape({Rect{300, 300, 200,33}; Name{"Shape_3"}; Color{red, green}});
+Shape({Rect{400, 23, 44, 55 }; Name{"Shape_4"}; Color{red, green}});

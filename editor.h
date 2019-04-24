@@ -37,6 +37,7 @@ public slots:
  //   template<class T>
  //   void clear();
     void clearAll();
+    void clearSelectedItems();
 
 private:
     QPen m_pen;

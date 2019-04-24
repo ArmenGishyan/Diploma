@@ -16,12 +16,11 @@
 GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView (gScene, parent)
 {
     m_gScene = gScene;
-   // gScene->setSceneRect(this->rect());
 
     //m_gScene->setSceneRect(QRectF(this->rect()));
 
 
-    setBackgroundBrush(QBrush("#C3E1F5", Qt::SolidPattern));
+    setBackgroundBrush(QBrush("#171F32", Qt::Dense1Pattern));
 
     m_currentItem = nullptr;
     m_drawableItem = nullptr;
@@ -57,19 +56,12 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
 }
 void GraphicsView::mousePressEvent(QMouseEvent* ev)
 {
-   // QPoint origin = ev->pos();
-   // QRubberBand* rubberBand = nullptr;
-   // if (!rubberBand)
-   //     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-   // rubberBand->setGeometry(QRect(origin, QSize()));
-   // rubberBand->show();
-
     qDebug()<<"Current item = "<<m_currentItem;
     if(!m_currentItem) {
         m_drawableItem = nullptr;
     }
 
-    if(m_currentItem && ev->buttons() == Qt::LeftButton) {
+    if(m_currentItem &&ev->buttons() == Qt::LeftButton) {
         m_drawableItem = m_currentItem->create();
         m_drawableItem->setStartPoint(mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint());
         qDebug()<<"Scence rect = "<<scene()->sceneRect();
@@ -85,13 +77,19 @@ void GraphicsView::mousePressEvent(QMouseEvent* ev)
 }
 void GraphicsView::mouseMoveEvent(QMouseEvent* ev)
 {
-    if(m_drawableItem && ev->buttons() == Qt::LeftButton) {
-        qDebug()<<"inside if";
-        QPoint point = (mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint()); // + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
-        QList<QPoint> itemsList;
-        itemsList << point;
-        m_drawableItem->changeSize(point);
-        update();
+    if(m_drawableItem) {
+        if(ev->buttons() == Qt::LeftButton) {
+            qDebug()<<"inside if";
+            QPoint point = (mapToScene(ev->pos() + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value())).toPoint()); // + QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+            QList<QPoint> itemsList;
+            itemsList << point;
+            m_drawableItem->changeSize(point);
+            update();
+        } else {
+            QPainter painter(this);
+            painter.drawText(ev->pos(), QString::number(ev->pos().x())+", " + QString::number(ev->pos().y()));
+
+        }
     }
 }
 
@@ -100,6 +98,13 @@ void GraphicsView::paintEvent(QPaintEvent* ev)
 {
    // qDebug()<<"--------------------------------------------------------------GraphicsView paint event";
     QGraphicsView::paintEvent(ev);
+    QPainter painter(this);
+    QPen pen;
+    pen.setWidth(5);
+    pen.setColor(QColor(Qt::red));
+    painter.setPen(pen);
+    painter.drawLine(QPoint(0,0), QPoint(500,500));
+
 }
 
 GGraphicsItem* GraphicsView::getCurrentItem() const
@@ -116,13 +121,19 @@ void GraphicsView::setCurrentItem(GGraphicsItem* item)
 
 void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    QGraphicsItem* item = itemAt(event->pos());
+    const auto trans = QGraphicsView::transform();
+    if(!m_gScene)
+        return;
+    QGraphicsItem* item = m_gScene->itemAt(mapToScene(event->pos()), trans);
+    qDebug()<<"event pos =------------------------------------------------------------------------ "<<event->pos();
+    assert(item && "item == nullptr");
     GGraphicsItem* gItem = qgraphicsitem_cast<GGraphicsItem*>(item);
+    assert(gItem && "GItem == nullptr");
     if(gItem) {
         gItem->setItemSelected(!gItem->isSelected());
-        if(m_gScene) {
-           m_gScene->update();
-        }
+    }
+    if(m_gScene) {
+       m_gScene->update();
     }
 
     qDebug()<<"GraphicsView::mouseDoubleClickEvent";
@@ -174,8 +185,12 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void GraphicsScene::drawCoordinateLines()
 {
-   // addLine(QLine(0,0, 100, 0), QPen(QColor(Qt::yellow)));
-   // addLine(QLine(0,0, 0, 100), QPen(QColor(Qt::yellow)));
+
+    addLine(QLine(0,0, 1000, 0), QPen(QColor(Qt::yellow)));
+    addLine(QLine(0,0, 0, 1000), QPen(QColor(Qt::yellow)));
+    addLine(QLine(0,0, -1000, 0), QPen(QColor(Qt::yellow)));
+    addLine(QLine(0,0, 0, -1000), QPen(QColor(Qt::yellow)));
+
 }
 
 void GraphicsScene::handleFocusItemChanged(QGraphicsItem *newFocusItem, QGraphicsItem *oldFocusItem, Qt::FocusReason reason)

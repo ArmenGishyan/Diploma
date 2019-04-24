@@ -13,6 +13,10 @@
 #include <QApplication>
 #include <guierrors.h>
 #include <QMessageBox>
+#include <QDir>
+#include <QFileDialog>
+
+#include "readshapesfromfile.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)/*, ui(new Ui::MainWindow)*/
@@ -88,11 +92,11 @@ void MainWindow::createFileMenu()
 {
     m_fileMenu = menuBar()->addMenu("File");
     m_fileMenu->addAction(new QAction("New"));
-    m_fileMenu->addAction(new QAction("Open"));
     m_fileMenu->addAction(new QAction("Save As"));
 
     QAction* openAction = new QAction("Open");
-    connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openClicked()));
+    assert(connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openClicked())));
+    m_fileMenu->addAction(openAction);
     m_fileMenu->addAction(new QAction("Save"));
 
     QList<QAction*> it = m_fileMenu->actions();
@@ -162,7 +166,12 @@ void MainWindow::createActionToolBar()
     clearEitor->setIcon(QIcon(":/Icons/clear.png"));
     m_actionToolBar->addAction(clearEitor);
 
+    QAction* clearSelected = new QAction("Delete Selected Items");
+    clearSelected->setIcon(QIcon(":/Icons/clearSelected.png"));
+    m_actionToolBar->addAction(clearSelected);
+
     assert(connect(clearEitor, SIGNAL(triggered(bool)), m_editor, SLOT(clearAll())));
+    assert(connect(clearSelected, SIGNAL(triggered(bool)), m_editor, SLOT(clearSelectedItems())));
 
     addToolBar(Qt::LeftToolBarArea, m_actionToolBar);
     connect(m_getShortPath, SIGNAL(triggered(bool)), this, SLOT(handleshortedPathAction()));
@@ -194,6 +203,11 @@ void MainWindow::handleshortedPathAction()
 
 void MainWindow::openClicked()
 {
+    //assert(false);
+    QDir filePath(QCoreApplication::applicationDirPath());
+    QString path = QFileDialog::getOpenFileName(nullptr, tr("Open File"), filePath.path());
+    ReadWriteFile file(path.toStdString(), std::ios::in);
+    std::vector<std::string> lines = file.getLinesFromFile();
     qDebug()<<"open Clicked";
 }
 

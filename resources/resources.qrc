@@ -8,6 +8,7 @@
         <file>Icons/shortPath.png</file>
         <file>Icons/clear.png</file>
         <file>Icons/noShape.png</file>
+        <file>Icons/clearSelected.png</file>
         <file>example.qml</file>
     </qresource>
 </RCC>

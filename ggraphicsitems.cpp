@@ -69,6 +69,13 @@ QRectF GGraphicsRectItem::boundingRect() const
     return QRectF((leftTop + QPoint(-1, 1)), bottomRight + QPoint(1, -1));
 }
 
+
+GGraphicsRectItem* GGraphicsRectItem::parseShape(QString str) const
+{
+    //Shape{Rect{50, 30, 100, 100}; Name{"Shape_1"}; Color{red, green}});
+
+}
+
 void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     GGraphicsStyle style;
@@ -91,16 +98,18 @@ void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem
     qDebug()<<"pen = "<<painter->pen();
     qDebug()<<"brush = "<<painter->brush();
     painter->drawRect(m_rect);
-    QTransform transform;
-   // transform.rotate(270);
-   // painter->setTransform(transform);
+    //QTransform transform;
+    //transform.rotate(270);
+    //painter->setTransform(transform);
     QString rightBottom = QString::number(m_rect.bottomRight().x()) + ", " + QString::number(m_rect.bottomRight().y());
     QString leftTop = QString::number(m_rect.topLeft().x()) + ", " + QString::number(m_rect.topLeft().y());
 
     //transform.rotateRadians(23);
+    QPoint point1 = m_rect.bottomRight() + QPoint(2, -1);
+    QPoint point2 = m_rect.topLeft() + QPoint(-1, 1);
     //painter->rotate(90); //setTransform(transform);
-    painter->drawText(m_rect.bottomRight() + QPoint(2, -1), rightBottom);
-    painter->drawText(m_rect.topLeft() + QPoint(-1, 1), leftTop);
+    painter->drawText(mapFromScene(m_rect.bottomRight() + QPoint(2, -1)), rightBottom);
+    painter->drawText(mapFromScene(m_rect.topLeft() + QPoint(-1, 1)), leftTop);
     QFont font;
     font.setBold(true);
     font.setWeight(2);
@@ -174,6 +183,11 @@ QRectF GGraphicsPointItem::boundingRect() const
     QRectF(m_point+ QPoint(-1,1), m_point + QPoint(1,1));
 }
 
+GGraphicsPointItem* GGraphicsPointItem::parseShape(QString str) const
+{
+    new GGraphicsPointItem;
+}
+
 void GGraphicsPointItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
      painter->drawLine(m_point, m_point);
@@ -213,6 +227,10 @@ QRectF GGraphicsLineItem::boundingRect() const
     return QRectF(m_start+QPoint(-1, 1), m_end + QPoint(1,-1));
 }
 
+GGraphicsLineItem* GGraphicsLineItem::parseShape(QString str) const
+{
+    return new GGraphicsLineItem;
+}
 void GGraphicsLineItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     painter->drawLine(m_start, m_end);
