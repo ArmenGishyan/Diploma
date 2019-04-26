@@ -27,6 +27,7 @@ SOURCES += \
     main.cpp \
     engine.cpp \
     mainwindow.cpp \
+    parsetext.cpp \
     polygons.cpp \
     command.cpp \
     graph.cpp \
@@ -39,12 +40,14 @@ SOURCES += \
     dockwidgets.cpp \
     ggraphicsstyle.cpp \
     readshapesfromfile.cpp \
+    selectdestinitions.cpp \
     selectedgeweight.cpp
 
 HEADERS += \
     engine.h \
     guierrors.h \
     mainwindow.h \
+    parsetext.h \
     polygons.h \
     editor.h \
     command.h \
@@ -52,6 +55,7 @@ HEADERS += \
     graphicsview.h \
     gaction.h \
     gstyledialog.h \
+    selectdestinitions.h \
     shortestpathproblem.h \
     ggraphicsshapesitem.h \
     ggraphicsitems.h \

@@ -3,12 +3,15 @@
         <file>Icons/color.png</file>
         <file>Icons/line.png</file>
         <file>Icons/rect.png</file>
+        <file>Icons/square.png</file>
+        <file>Icons/circle.png</file>
         <file>Icons/point.png</file>
         <file>Icons/penStyle.png</file>
         <file>Icons/shortPath.png</file>
         <file>Icons/clear.png</file>
         <file>Icons/noShape.png</file>
         <file>Icons/clearSelected.png</file>
+        <file>Icons/selectTwoItem.png</file>
         <file>example.qml</file>
     </qresource>
 </RCC>

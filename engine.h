@@ -91,14 +91,14 @@ template<class T>
 int Engine::calculateWeight(const T& shape1, const T& shape2) const
 {
     QRectF  intersectRect = shape1.squareOfOverlapTest(&shape2);
-    int weightOfGraphVertex = 0;
-    weightOfGraphVertex = static_cast<int>(intersectRect.width() * intersectRect.height());
+    long long int weightOfGraphVertex = 0;
+    weightOfGraphVertex = static_cast< long long int>(intersectRect.width() * intersectRect.height());
     if(m_priority == SelectEdgeWeight::GraphWeightPriority::MargeSauare) {
         int margeSquare = shape1.square() + shape2.square();
         weightOfGraphVertex = margeSquare - weightOfGraphVertex;
     }
 
     weightOfGraphVertex /= 300;
-    return weightOfGraphVertex;
+    return int(weightOfGraphVertex);
 }
 #endif // ENGINE_H

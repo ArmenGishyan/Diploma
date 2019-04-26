@@ -15,6 +15,8 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QFileDialog>
+#include "parsetext.h"
+#include "selectdestinitions.h"
 
 #include "readshapesfromfile.h"
 
@@ -70,12 +72,22 @@ void MainWindow::createToolBar()
     m_drawPoint->setIcon(QIcon(":/Icons/point.png"));
     m_drawPoint->setText("Draw Point");
 
+    QAction* circleAction = new QAction(m_mainToolBar);
+    circleAction->setIcon(QIcon(":/Icons/circle.png"));
+    circleAction->setText("Draw Circle");
+
+    QAction* squareAction = new QAction(m_mainToolBar);
+    squareAction->setIcon(QIcon(":/Icons/square.png"));
+    squareAction->setText("Draw Square");
+
     GNoneShapeAction* noneShape = new GNoneShapeAction(this);
     noneShape->setIcon(QIcon(":/Icons/noShape.png"));
     noneShape->setText("None Shape");
     m_mainToolBar->addAction(m_drawLine);
     m_mainToolBar->addAction(m_drawRect);
     m_mainToolBar->addAction(m_drawPoint);
+    m_mainToolBar->addAction(circleAction);
+    m_mainToolBar->addAction(squareAction);
     m_mainToolBar->addAction(noneShape);
     connect(m_mainToolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(actionClicked(QAction*)));
 
@@ -170,8 +182,12 @@ void MainWindow::createActionToolBar()
     clearSelected->setIcon(QIcon(":/Icons/clearSelected.png"));
     m_actionToolBar->addAction(clearSelected);
 
+    QAction* selectTwoItem = new QAction("Chose Two Destinations");
+    selectTwoItem->setIcon(QIcon(":/Icons/selectTwoItem.png"));
+    m_actionToolBar->addAction(selectTwoItem);
     assert(connect(clearEitor, SIGNAL(triggered(bool)), m_editor, SLOT(clearAll())));
     assert(connect(clearSelected, SIGNAL(triggered(bool)), m_editor, SLOT(clearSelectedItems())));
+    assert(connect(selectTwoItem, SIGNAL(triggered(bool)), this, SLOT(twoDestinition())));
 
     addToolBar(Qt::LeftToolBarArea, m_actionToolBar);
     connect(m_getShortPath, SIGNAL(triggered(bool)), this, SLOT(handleshortedPathAction()));
@@ -180,7 +196,7 @@ void MainWindow::createActionToolBar()
 void MainWindow::handleshortedPathAction()
 {
     qDebug()<<"handleshortedPathAction";
-
+    assert(false);
     if(m_engine && m_editor) {
         QList<GGraphicsItem*> items = m_editor->getSelectedItems();
         qDebug()<<"selected items count "<<items.size();
@@ -205,9 +221,15 @@ void MainWindow::openClicked()
 {
     //assert(false);
     QDir filePath(QCoreApplication::applicationDirPath());
-    QString path = QFileDialog::getOpenFileName(nullptr, tr("Open File"), filePath.path());
+    QString path = QFileDialog::getOpenFileName(nullptr, tr("Save"), filePath.path());
     ReadWriteFile file(path.toStdString(), std::ios::in);
     std::vector<std::string> lines = file.getLinesFromFile();
+    if(m_editor) {
+        ParseText text(lines);
+        auto shp = text.parseShapes();
+        m_editor->addShapes(shp);
+        m_editor->update();
+    }
     qDebug()<<"open Clicked";
 }
 
@@ -245,6 +267,28 @@ void MainWindow::executeCurrentMessage()
     }
 }
 
+void MainWindow::twoDestinition()
+{
+    SelectDestinitions* dest = new SelectDestinitions;
+    dest->setModal(true);
+    if(dest->exec() == QDialog::Accepted) {
+        QList<QString> values = dest->getDestinitions();
+        if(m_engine) {
+            const std::string startName = values[0].toStdString();
+            const std::string endName = values[1].toStdString();
+            std::vector<std::string> rects = m_engine->findPath<Rectangle>(startName, endName);
+            QList<QString> pathNames;
+                for(const std::string& it : rects) {
+                pathNames.push_back(QString::fromStdString(it));
+            }
+
+            m_editor->selectItems(pathNames);
+        }
+    }
+    qDebug()<<"vdfvdf";
+    qDebug()<<"file";
+
+}
 TooManySelection::TooManySelection(int count, GuiMessageWirter::Priority priority, std::string message):GuiMessageWirter (priority,message)
 {
     m_selectionCount = count;

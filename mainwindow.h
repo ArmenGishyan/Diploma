@@ -38,12 +38,13 @@ private:
     void createWeigthPriorityMenu();
 
 
-public slots:
+private slots:
     void actionClicked(QAction*);
     void styleActionClicked(QAction*);
     void handleshortedPathAction();
     void openClicked();
     void selectWeightPriority();
+    void twoDestinition();
 
   //  void handleDrawRect();
   //  void handleDrawLine();

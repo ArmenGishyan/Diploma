@@ -3,11 +3,12 @@
 
 #include <QPen>
 #include <QBrush>
+#include <memory>
 
 class GGraphicsStyle
 {
 public:
-    GGraphicsStyle(QPen pen = QPen(QColor(Qt::red)), QBrush brush = QBrush(QColor(Qt::blue)));
+    GGraphicsStyle(QPen pen = QPen(QColor(Qt::red)), QBrush brush = QBrush(QColor(0,85,0)));
     ~GGraphicsStyle();
     QPen pen(){return  m_pen;}
     QBrush brush(){return m_brush;}
@@ -20,4 +21,12 @@ private:
     QBrush m_brush;
 };
 
+class GuiBaseStyle
+{
+public:
+
+
+private:
+    static std::unique_ptr<GGraphicsStyle> m_defaultStyle;
+};
 #endif // GGRAPHICSSTYLE_H

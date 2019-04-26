@@ -14,8 +14,6 @@ class Editor : public QWidget
 public:
     Editor(QWidget* parent = nullptr);
     void paintEvent(QPaintEvent* p) override;
-    //void resizeEvent(QResizeEvent *event) override;
-
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void dragMoveEvent(QDragMoveEvent* event) override;
@@ -23,7 +21,6 @@ public:
     void dropEvent(QDropEvent* event) override;
     void setPen(const QPen& pen);
     void setBrush(const QBrush& brush);
-    //void setSenceRect(const QRect& rect) {m_grScene->setSceneRect(rect);}
     template<class T>
     QList<T> getShapeItems() const;
     QPen getPen() const {return m_pen;}
@@ -32,10 +29,9 @@ public:
     QList<GGraphicsItem*> getSelectedItems() const;
     void selectItems(const QList<GGraphicsItem*>& items);
     void selectItems(const QList<QString>& itemNames);
+    void addShapes(QList<GGraphicsItem*> shapes);
 
 public slots:
- //   template<class T>
- //   void clear();
     void clearAll();
     void clearSelectedItems();
 

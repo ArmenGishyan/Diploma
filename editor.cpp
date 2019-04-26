@@ -23,7 +23,7 @@ Editor::Editor(QWidget* parent):QWidget (parent)
     int y = this->height();
     m_grScene  = new GraphicsScene(this);
     m_grView = new GraphicsView(m_grScene, this);
-    m_grScene->setSceneRect(0,0,500, 1150);
+    m_grScene->setSceneRect(0,0, 1150, 500);
     installEventFilter(m_grScene);
     //m_grScene->setSceneRect(0,0,this->width(), this->height());
     setStyleSheet("background-color: #F08080");
@@ -191,4 +191,13 @@ QList<GGraphicsItem*> Converter::convert(const QList<QGraphicsItem*>& items)
          }
     }
     return gItems;
+}
+
+void Editor::addShapes(QList<GGraphicsItem*> shapes)
+{
+    if(m_grScene) {
+        for(GGraphicsItem* item : shapes) {
+           m_grScene->addItem(item);
+        }
+    }
 }

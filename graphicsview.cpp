@@ -36,7 +36,7 @@ GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView
     setLayout(lay);
     //scale(1, -1);
 
-    rotate(270);
+    //rotate(270);
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
@@ -124,11 +124,10 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent* event)
     const auto trans = QGraphicsView::transform();
     if(!m_gScene)
         return;
-    QGraphicsItem* item = m_gScene->itemAt(mapToScene(event->pos()), trans);
+    QPoint pos = event->pos();
+    QGraphicsItem* item = itemAt(mapToScene(pos).toPoint());
     qDebug()<<"event pos =------------------------------------------------------------------------ "<<event->pos();
-    assert(item && "item == nullptr");
     GGraphicsItem* gItem = qgraphicsitem_cast<GGraphicsItem*>(item);
-    assert(gItem && "GItem == nullptr");
     if(gItem) {
         gItem->setItemSelected(!gItem->isSelected());
     }
@@ -186,10 +185,10 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void GraphicsScene::drawCoordinateLines()
 {
 
-    addLine(QLine(0,0, 1000, 0), QPen(QColor(Qt::yellow)));
-    addLine(QLine(0,0, 0, 1000), QPen(QColor(Qt::yellow)));
-    addLine(QLine(0,0, -1000, 0), QPen(QColor(Qt::yellow)));
-    addLine(QLine(0,0, 0, -1000), QPen(QColor(Qt::yellow)));
+   // addLine(QLine(0,0, 1000, 0), QPen(QColor(Qt::yellow)));
+   // addLine(QLine(0,0, 0, 1000), QPen(QColor(Qt::yellow)));
+   // addLine(QLine(0,0, -1000, 0), QPen(QColor(Qt::yellow)));
+   // addLine(QLine(0,0, 0, -1000), QPen(QColor(Qt::yellow)));
 
 }
 

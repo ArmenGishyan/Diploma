@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <utility>
+#include <QPen>
 
 #include "ggraphicsstyle.h"
 
@@ -12,14 +13,15 @@ std::unique_ptr<GGraphicsStyle> GGraphicsItem::m_styleInSelection = std::make_un
 GGraphicsItem::GGraphicsItem(QGraphicsItem * parent) : QGraphicsItem(parent)
 {
     m_name = "";
-    m_style = std::make_shared<GGraphicsStyle>(QColor(Qt::green));
+    m_style = std::make_shared<GGraphicsStyle>(QPen(QColor("#005500")), QBrush(QColor("#005500")));
     m_isSelected = false;
 }
 
 GGraphicsItem::GGraphicsItem(std::string name, QGraphicsItem * parent): GGraphicsItem(parent)
 {
     m_name = name;
-    m_style = std::make_shared<GGraphicsStyle>(QColor(Qt::green));
+    m_style = std::make_shared<GGraphicsStyle>(QPen(QColor("#005500")), QBrush(QColor("#005500")));
+    //m_style = std::make_shared<GGraphicsStyle>(QColor(Qt::green));
     m_isSelected = false;
 }
 
@@ -70,7 +72,7 @@ QRectF GGraphicsRectItem::boundingRect() const
 }
 
 
-GGraphicsRectItem* GGraphicsRectItem::parseShape(QString str) const
+GGraphicsRectItem* GGraphicsRectItem::parseShape(QStringList str) const
 {
     //Shape{Rect{50, 30, 100, 100}; Name{"Shape_1"}; Color{red, green}});
 
@@ -136,20 +138,20 @@ void GGraphicsRectItem::setEndPoint(const QPoint& point)
     m_rect.setBottomRight(point);
 }
 
-//void GGraphicsRectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
-//{
-//    setItemSelected(!m_isSelected);
-//    update();
-//   // std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>();
-//   // style->setBrush(QBrush(Qt::yellow));
-//   // style->setPen(QColor(Qt::red));
-//
-//   // setStyle(style);
-//   // //m_rect.setBobottomRight()
-//   // //update();
-//   //// parentWidget()->update();
-//   // setSelected(true);
-//}
+void GGraphicsRectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+{
+   // setItemSelected(!m_isSelected);
+   // update();
+   // std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>();
+   // style->setBrush(QBrush(Qt::yellow));
+   // style->setPen(QColor(Qt::red));
+
+   // setStyle(style);
+   // //m_rect.setBobottomRight()
+   // //update();
+   //// parentWidget()->update();
+   // setSelected(true);
+}
 
 //--------------------------------Point Item---------------------------------------
 GGraphicsPointItem::GGraphicsPointItem(QGraphicsItem* parent) : GGraphicsItem (parent)
@@ -183,7 +185,7 @@ QRectF GGraphicsPointItem::boundingRect() const
     QRectF(m_point+ QPoint(-1,1), m_point + QPoint(1,1));
 }
 
-GGraphicsPointItem* GGraphicsPointItem::parseShape(QString str) const
+GGraphicsPointItem* GGraphicsPointItem::parseShape(QStringList str) const
 {
     new GGraphicsPointItem;
 }
@@ -227,7 +229,7 @@ QRectF GGraphicsLineItem::boundingRect() const
     return QRectF(m_start+QPoint(-1, 1), m_end + QPoint(1,-1));
 }
 
-GGraphicsLineItem* GGraphicsLineItem::parseShape(QString str) const
+GGraphicsLineItem* GGraphicsLineItem::parseShape(QStringList str) const
 {
     return new GGraphicsLineItem;
 }

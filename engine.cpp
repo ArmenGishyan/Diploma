@@ -17,15 +17,11 @@ Engine::Engine()
 std::vector<Rectangle> Engine::getRectanglesFromGui() const
 {
    const Editor* editor = m_mainWindow ? m_mainWindow->getEditor() : nullptr;
-
-   Graph<int>* graph = new Graph<int>;
+   //assert(false);
    std::vector<Rectangle> rectVector;
    QList<GGraphicsRectItem*> rectItems;
    if(editor) {
        rectItems = editor->getShapeItems<GGraphicsRectItem*>();
-       auto text = editor->getShapeItems<QGraphicsTextItem*>();
-       int x = 10;
-       ++x;
    }
 
    for(int i = 0; i < rectItems.size(); ++i) {
@@ -34,14 +30,10 @@ std::vector<Rectangle> Engine::getRectanglesFromGui() const
        QPoint bottomRight = rect.bottomRight();
        Rectangle rectangle(Point(topLeft.x(), topLeft.y()), Point(bottomRight.x(), bottomRight.y()));
        std::string name = rectItems[i]->name();
-       int x =0;
-       ++x;
        rectangle.setName(name);
        rectVector.push_back(rectangle);
    }
-
    return rectVector;
-
 }
 
 

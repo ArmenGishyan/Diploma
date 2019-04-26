@@ -20,7 +20,8 @@ public:
     virtual void setStartPoint(const QPoint& point) = 0;
     virtual void setEndPoint(const QPoint& point) = 0;
     virtual void changeSize(const QPoint& point) = 0;
-    virtual GGraphicsItem* parseShape(QString str) const = 0;
+    virtual GGraphicsItem* parseShape(QStringList str) const = 0;
+    //virtual QString convertAsText() const = 0;
     inline void setStyle(std::shared_ptr<GGraphicsStyle> style) { m_style = style;}
     inline std::shared_ptr<GGraphicsStyle> style() const {return m_style;}
     inline void setName(const QString& name) {m_name = name.toStdString();}
@@ -29,7 +30,6 @@ public:
     static const std::unique_ptr<GGraphicsStyle>* getSelectionStyle();
     bool isSelected(){return m_isSelected;}
     bool setItemSelected(bool selected) {m_isSelected = selected;}
-
 
 protected:
     bool m_isSelected;
@@ -51,11 +51,11 @@ public:
     void setEndPoint(const QPoint& point) override;
     void changeSize(const QPoint& points) override;
     QRectF boundingRect() const override;
-    GGraphicsRectItem* parseShape(QString str) const override;
+    GGraphicsRectItem* parseShape(QStringList str) const override;
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr) override;
     QRectF rect() const {return m_rect;}
     void setRect(QRectF rect) {m_rect = rect.toRect();}
-   // void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
 private:
     QRect m_rect;
@@ -71,7 +71,7 @@ public:
     virtual void setEndPoint(const QPoint& point) override;
     virtual void changeSize(const QPoint& points) override;
     QRectF boundingRect() const override;
-    GGraphicsPointItem* parseShape(QString str) const override;
+    GGraphicsPointItem* parseShape(QStringList str) const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     int getX() {return m_point.rx();}
     int getY() {return m_point.ry();}
@@ -92,7 +92,7 @@ public:
     void setEndPoint(const QPoint& point) override;
     void changeSize(const QPoint& points) override;
     QRectF boundingRect() const override;
-    GGraphicsLineItem* parseShape(QString str) const override;
+    GGraphicsLineItem* parseShape(QStringList str) const override;
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr) override;
 
 private:
