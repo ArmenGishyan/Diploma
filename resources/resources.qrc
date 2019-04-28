@@ -13,6 +13,7 @@
         <file>Icons/noShape.png</file>
         <file>Icons/clearSelected.png</file>
         <file>Icons/selectTwoItem.png</file>
+        <file>Icons/windowIcon.png</file>
         <file>example.qml</file>
     </qresource>
 </RCC>
