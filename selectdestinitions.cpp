@@ -21,6 +21,7 @@ SelectDestinitions::SelectDestinitions()
      grLay->addWidget(cancel, 5, 0, 1, 5);
      grLay->addWidget(findPath,5,5,1,10);
      setLayout(grLay);
+     setWindowTitle("Source and Destination");
      assert(connect(cancel, SIGNAL(clicked(bool)), this, SLOT(reject())));
      assert(connect(findPath, SIGNAL(clicked(bool)), this, SLOT(accept())));
 }

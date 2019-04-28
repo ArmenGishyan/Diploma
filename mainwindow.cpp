@@ -103,15 +103,15 @@ void MainWindow::createMenuBar()
 
 void MainWindow::createFileMenu()
 {
-    //m_fileMenu = menuBar()->addMenu("File");
-    //m_fileMenu->addAction(new QAction("New"));
-    //QAction* openAction = new QAction("Open");
-    //m_fileMenu->addAction(openAction);
-    //QAction* saveAction = new QAction("Save");
-    //m_fileMenu->addAction(saveAction);
-    //m_fileMenu->addAction(new QAction("Save As"));
-    //assert(connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openClicked())));
-    //assert(connect(saveAction, SIGNAL(triggered(bool)), this, SLOT(saveClicked())));
+    m_fileMenu = menuBar()->addMenu("File");
+    m_fileMenu->addAction(new QAction("New"));
+    QAction* openAction = new QAction("Open");
+    m_fileMenu->addAction(openAction);
+    QAction* saveAction = new QAction("Save");
+    m_fileMenu->addAction(saveAction);
+    m_fileMenu->addAction(new QAction("Save As"));
+    assert(connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openClicked())));
+    assert(connect(saveAction, SIGNAL(triggered(bool)), this, SLOT(saveClicked())));
 
 
     QList<QAction*> it = m_fileMenu->actions();

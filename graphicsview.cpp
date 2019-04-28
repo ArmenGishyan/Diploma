@@ -20,7 +20,7 @@ GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView
     m_gScene = gScene;
 
     m_style = std::make_shared<GGraphicsStyle>();
-    setBackgroundBrush(QBrush("#171F32", Qt::Dense1Pattern));
+    setBackgroundBrush(QBrush("#7B7676", Qt::Dense1Pattern));
 
     m_currentItem = nullptr;
     m_drawableItem = nullptr;

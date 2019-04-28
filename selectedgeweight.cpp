@@ -25,9 +25,12 @@ SelectEdgeWeight::SelectEdgeWeight(QWidget* parent):QDialog(parent)
     QLabel* name = new QLabel("Select Weight Priority");
     HBLayout1->addWidget(name);
     HBLayout1->addWidget(m_selectType);
+    HBLayout1->setSpacing(10);
+    HBLayout2->setSpacing(10);
     VBoxLayout->addItem(HBLayout1);
     VBoxLayout->addItem(HBLayout2);
     setLayout(VBoxLayout);
+    setWindowTitle("Weight Property");
     setModal(true);
 }
 
