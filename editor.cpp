@@ -140,6 +140,11 @@ QList<GGraphicsItem*> Editor::getSelectedItems() const
 void Editor::selectItems(const QList<QString>& itemsName)
 {
      std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>(GGraphicsItem::getSelectionStyle()->get()->pen(), GGraphicsItem::getSelectionStyle()->get()->brush());
+     selectItems(itemsName, style);
+}
+
+void Editor::selectItems(const QList<QString>& itemsName, const std::shared_ptr<GGraphicsStyle>& style)
+{
      QList<GGraphicsItem*> items = Converter::convert(m_grScene->items());
      auto findSelection = [&itemsName, &style](GGraphicsItem* item) {
          for(const auto& name : itemsName) {
@@ -153,7 +158,6 @@ void Editor::selectItems(const QList<QString>& itemsName)
         m_grScene->update();
      }
 }
-
 void Editor::selectItems(const QList<GGraphicsItem*>& itemsName)
 {
 
@@ -201,5 +205,12 @@ std::shared_ptr<GGraphicsStyle> Editor::getStyle() const
 {
     if(m_grView) {
         return m_grView->getStyle();
+    }
+}
+
+void Editor::toDefaultState()
+{
+    if(m_grView) {
+        m_grView->selectUnselectAll(false);
     }
 }

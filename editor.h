@@ -27,9 +27,11 @@ public:
     QList<GGraphicsItem*> getSelectedItems() const;
     void selectItems(const QList<GGraphicsItem*>& items);
     void selectItems(const QList<QString>& itemNames);
+    void selectItems(const QList<QString>& itemNames, const std::shared_ptr<GGraphicsStyle>& style);
     void addShapes(QList<GGraphicsItem*> shapes);
     void setStyle(const std::shared_ptr<GGraphicsStyle>& style, bool force = true);
     std::shared_ptr<GGraphicsStyle> getStyle() const;
+    void toDefaultState();
 
 public slots:
     void clearAll();

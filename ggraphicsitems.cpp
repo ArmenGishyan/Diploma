@@ -81,7 +81,7 @@ GGraphicsRectItem* GGraphicsRectItem::parseShape(QStringList str) const
 void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
     GGraphicsStyle style;
-    if(m_isSelected) {
+    if(isSelected()) {
         auto stylePtr = GGraphicsItem::getSelectionStyle();
         if(stylePtr) {
            style.setPen(stylePtr->get()->pen());
@@ -97,12 +97,7 @@ void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem
     painter->setPen(style.pen());
     painter->setBrush(style.brush());
 
-    qDebug()<<"pen = "<<painter->pen();
-    qDebug()<<"brush = "<<painter->brush();
     painter->drawRect(m_rect);
-    //QTransform transform;
-    //transform.rotate(270);
-    //painter->setTransform(transform);
     QString rightBottom = QString::number(m_rect.bottomRight().x()) + ", " + QString::number(m_rect.bottomRight().y());
     QString leftTop = QString::number(m_rect.topLeft().x()) + ", " + QString::number(m_rect.topLeft().y());
 
@@ -117,9 +112,6 @@ void GGraphicsRectItem::paint(QPainter * painter, const QStyleOptionGraphicsItem
     font.setWeight(2);
 
     painter->drawText(m_rect.center(), QString::fromStdString(name()));
-
-    //painter->setFont()
-    //painter->rotate(-90);
 }
 
 

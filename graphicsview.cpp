@@ -152,6 +152,24 @@ std::shared_ptr<GGraphicsStyle> GraphicsView::getStyle() const
    return m_style;
 }
 
+void GraphicsView::visitAllItems(const std::function<void(GGraphicsItem*)>& func)
+{
+    QList<QGraphicsItem*> items = this->items();
+    GGraphicsItem* gItem = nullptr;
+    for(int i = 0; i < items.size(); ++i) {
+        gItem = qgraphicsitem_cast<GGraphicsItem*>(items[i]);
+        if(gItem) {
+           func(gItem);
+        }
+    }
+}
+
+void GraphicsView::selectUnselectAll(bool select)
+{
+    auto selectUnselect = [select](GGraphicsItem* item) -> void {item->setSelected(select);};
+    visitAllItems(selectUnselect);
+}
+
 //---------------------------------------------------------------------GGraphicsScene----------------
 GraphicsScene::GraphicsScene(QObject* parent):QGraphicsScene (parent)
 {

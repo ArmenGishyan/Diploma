@@ -123,6 +123,7 @@ std::vector<Node<T>*> ShortestPathProblem<T>::shortestPath(Graph<T> obj, Node<T>
             }
             ++it;
         }
+
         Node<T>* smallerPrev = pQueueValues[smallWeight].prev();
         pQueueValues[smallWeight].setWeight(std::numeric_limits<int>::max());
         obj.deleteNode(smallWeight);

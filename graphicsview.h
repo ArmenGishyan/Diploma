@@ -48,10 +48,12 @@ public:
     GGraphicsItem* getCurrentItem() const;
     void setCurrentItem(GGraphicsItem* item);
     QList<GGraphicsItem*> getSelectedItems();
+    void visitAllItems(const std::function<void(GGraphicsItem*)>& func);
     // this function template
     template<class T>
     void setStyle(const std::shared_ptr<GGraphicsStyle>& style, bool force);
     std::shared_ptr<GGraphicsStyle> getStyle() const;
+    void selectUnselectAll(bool select);
 
 private slots:
     void sendEvent()

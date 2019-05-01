@@ -6,6 +6,7 @@
 #include <QIcon>
 #include <QToolButton>
 #include <QDesktopWidget>
+#include <QRgb>
 #include "editor.h"
 #include "dockwidgets.h"
 #include "engine.h"
@@ -17,6 +18,7 @@
 #include <QFileDialog>
 #include "parsetext.h"
 #include "selectdestinitions.h"
+#include "ggraphicsstyle.h"
 
 #include "readshapesfromfile.h"
 
@@ -196,7 +198,6 @@ void MainWindow::createActionToolBar()
 void MainWindow::handleshortedPathAction()
 {
     qDebug()<<"handleshortedPathAction";
-    assert(false);
     if(m_engine && m_editor) {
         QList<GGraphicsItem*> items = m_editor->getSelectedItems();
         qDebug()<<"selected items count "<<items.size();
@@ -269,26 +270,32 @@ void MainWindow::executeCurrentMessage()
 
 void MainWindow::twoDestinition()
 {
-    SelectDestinitions* dest = new SelectDestinitions;
-    dest->setModal(true);
-    if(dest->exec() == QDialog::Accepted) {
-        QList<QString> values = dest->getDestinitions();
-        if(m_engine) {
-            const std::string startName = values[0].toStdString();
-            const std::string endName = values[1].toStdString();
-            std::vector<std::string> rects = m_engine->findPath<Rectangle>(startName, endName);
-            QList<QString> pathNames;
-                for(const std::string& it : rects) {
-                pathNames.push_back(QString::fromStdString(it));
-            }
-
-            m_editor->selectItems(pathNames);
-        }
-    }
-    qDebug()<<"vdfvdf";
-    qDebug()<<"file";
-
+   if(m_editor) {
+       m_editor->toDefaultState();
+       m_editor->update();
+   }
+   SelectDestinitions* dest = new SelectDestinitions;
+   dest->setModal(true);
+   if(dest->exec() == QDialog::Accepted) {
+      QList<QString> values = dest->getDestinitions();
+      if(m_engine && values.size() > 1) {
+         const std::string startName = values[0].toStdString();
+         const std::string endName = values[1].toStdString();
+         std::vector<std::string> rects = m_engine->findPath<Rectangle>(startName, endName);
+         QList<QString> pathNames;
+             for(const std::string& it : rects) {
+             pathNames.push_back(QString::fromStdString(it));
+         }
+         QList<QString> startEnd;
+         startEnd << values[0] << values[1];
+         std::shared_ptr<GGraphicsStyle> style = std::make_shared<GGraphicsStyle>();
+         style->setBrush(QColor(48, 209, 70));
+         m_editor->selectItems(pathNames);
+         m_editor->selectItems(startEnd, style);
+      }
+   }
 }
+
 TooManySelection::TooManySelection(int count, GuiMessageWirter::Priority priority, std::string message):GuiMessageWirter (priority,message)
 {
     m_selectionCount = count;

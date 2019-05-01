@@ -7,6 +7,7 @@
 #include <graph.h>
 #include "shortestpathproblem.h"
 #include "selectedgeweight.h"
+#include <QMessageBox>
 
 class MainWindow;
 class QRect;
@@ -94,7 +95,7 @@ int Engine::calculateWeight(const T& shape1, const T& shape2) const
     long long int weightOfGraphVertex = 0;
     weightOfGraphVertex = static_cast< long long int>(intersectRect.width() * intersectRect.height());
     if(m_priority == SelectEdgeWeight::GraphWeightPriority::MargeSauare) {
-        int margeSquare = shape1.square() + shape2.square();
+        long long int margeSquare = (shape1.square() / 1000) + (shape2.square() / 1000);
         weightOfGraphVertex = margeSquare - weightOfGraphVertex;
     }
 
