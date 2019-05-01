@@ -68,9 +68,17 @@ private:
     Qt::BrushStyle m_brushStyle;
 };
 
+class GBrushColor : public GStyleAction
+{
+public:
+    GBrushColor();
+    void execute(Editor* editor) override;
+};
+
 class GPenColor : public GStyleAction
 {
 public:
+    GPenColor();
     void execute(Editor* editor) override;
 
 };

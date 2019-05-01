@@ -18,5 +18,4 @@ CommandLineGui::CommandLineGui(QWidget* parent):QDockWidget (parent)
     m_lineEdit->setMinimumWidth(300);
     m_lineEdit->setBackgroundRole(QPalette::Window);
     setLayout(lay);
-    //m_lineEdit->setSizePolicy(QSizePolicy(QSizePolicy::Expanding));
 }

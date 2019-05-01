@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QGraphicsView>
+#include <map>
+#include <set>
 
 #include "graphicsview.h"
 
@@ -19,25 +21,21 @@ public:
     void dragMoveEvent(QDragMoveEvent* event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent* event) override;
-    void setPen(const QPen& pen);
-    void setBrush(const QBrush& brush);
     template<class T>
     QList<T> getShapeItems() const;
-    QPen getPen() const {return m_pen;}
-    QBrush getBrush() const {return m_brush;}
     void setCurrentItem(GGraphicsItem* item);
     QList<GGraphicsItem*> getSelectedItems() const;
     void selectItems(const QList<GGraphicsItem*>& items);
     void selectItems(const QList<QString>& itemNames);
     void addShapes(QList<GGraphicsItem*> shapes);
+    void setStyle(const std::shared_ptr<GGraphicsStyle>& style, bool force = true);
+    std::shared_ptr<GGraphicsStyle> getStyle() const;
 
 public slots:
     void clearAll();
     void clearSelectedItems();
 
 private:
-    QPen m_pen;
-    QBrush m_brush;
     GraphicsScene* m_grScene;
     GraphicsView* m_grView;
 };

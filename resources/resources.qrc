@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>Icons/color.png</file>
+        <file>Icons/pencolor.png</file>
+        <file>Icons/fillcolor.png</file>
         <file>Icons/line.png</file>
         <file>Icons/rect.png</file>
         <file>Icons/square.png</file>

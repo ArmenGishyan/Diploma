@@ -15,10 +15,6 @@
 
 Editor::Editor(QWidget* parent):QWidget (parent)
 {
-    m_pen = QPen();
-    m_brush = QBrush();
-   // setFixedSize(QSize(300,300));
-   // setFixedSize(parent->width(), parent->height());
     int x = this->width();
     int y = this->height();
     m_grScene  = new GraphicsScene(this);
@@ -109,14 +105,6 @@ void Editor::dropEvent(QDropEvent* eve)
     QWidget::dropEvent(eve);
 }
 
-void Editor::setPen(const QPen& pen)
-{
-    m_pen = pen;
-    //std::shared_ptr<GGraphicsStyle> oldStyle = //GGraphicsItem::style();
-   // std::shared_ptr<GGraphicsStyle> style = std::shared_ptr<GGraphicsStyle>()
-   // GGraphicsItem::setStyle()
-}
-void Editor::setBrush(const QBrush& brush) {m_brush = brush;}
 // set Current QGraphics Item
 void Editor::setCurrentItem(GGraphicsItem* item)
 {
@@ -199,5 +187,19 @@ void Editor::addShapes(QList<GGraphicsItem*> shapes)
         for(GGraphicsItem* item : shapes) {
            m_grScene->addItem(item);
         }
+    }
+}
+
+void Editor::setStyle(const std::shared_ptr<GGraphicsStyle>& style, bool force)
+{
+    if(m_grView) {
+        m_grView->setStyle<GGraphicsRectItem>(style, force);
+    }
+}
+
+std::shared_ptr<GGraphicsStyle> Editor::getStyle() const
+{
+    if(m_grView) {
+        return m_grView->getStyle();
     }
 }

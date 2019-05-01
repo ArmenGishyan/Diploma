@@ -41,7 +41,8 @@ SOURCES += \
     ggraphicsstyle.cpp \
     readshapesfromfile.cpp \
     selectdestinitions.cpp \
-    selectedgeweight.cpp
+    selectedgeweight.cpp \
+    selectshapescolor.cpp
 
 HEADERS += \
     engine.h \
@@ -56,6 +57,7 @@ HEADERS += \
     gaction.h \
     gstyledialog.h \
     selectdestinitions.h \
+    selectshapescolor.h \
     shortestpathproblem.h \
     ggraphicsshapesitem.h \
     ggraphicsitems.h \

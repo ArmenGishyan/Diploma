@@ -48,6 +48,10 @@ public:
     GGraphicsItem* getCurrentItem() const;
     void setCurrentItem(GGraphicsItem* item);
     QList<GGraphicsItem*> getSelectedItems();
+    // this function template
+    template<class T>
+    void setStyle(const std::shared_ptr<GGraphicsStyle>& style, bool force);
+    std::shared_ptr<GGraphicsStyle> getStyle() const;
 
 private slots:
     void sendEvent()
@@ -66,15 +70,27 @@ private:
 
 //members
 private:
+    std::shared_ptr<GGraphicsStyle> m_style;
     QStack<GGraphicsItem*> m_selectedItem;
     GGraphicsItem* m_currentItem;
     GGraphicsItem* m_drawableItem;
     GraphicsScene* m_gScene;
 };
 
-
-
-
-
+template <class T>
+void GraphicsView::setStyle(const std::shared_ptr<GGraphicsStyle> &style, bool force)
+{
+    if(force) {
+        QList<QGraphicsItem*> itemList = items();
+        for(int i = 0; i < itemList.size(); ++i) {
+            T* item = qgraphicsitem_cast<T*>(itemList[i]);
+            if(item) {
+                item->setStyle(style);
+            }
+        }
+    } else {
+        m_style = style;
+    }
+}
 
 #endif // GRAPHICSVIEW_H

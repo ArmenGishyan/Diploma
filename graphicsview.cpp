@@ -13,13 +13,13 @@
 #include <QPaintEvent>
 #include <QPainterPath>
 
+#include "ggraphicsstyle.h"
+
 GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView (gScene, parent)
 {
     m_gScene = gScene;
 
-    //m_gScene->setSceneRect(QRectF(this->rect()));
-
-
+    m_style = std::make_shared<GGraphicsStyle>();
     setBackgroundBrush(QBrush("#171F32", Qt::Dense1Pattern));
 
     m_currentItem = nullptr;
@@ -28,15 +28,10 @@ GraphicsView::GraphicsView(GraphicsScene* gScene, QWidget* parent):QGraphicsView
     int height = parent->rect().height(); // + QPoint(50,50);
     int width = parent->rect().width(); //- QPoint(50,50);
 
-    //setFixedSize(height, width);
-    //setSceneRect(QRectF(0, 0, 690, 800)); // 295, 295));
     setMouseTracking(true);
 
     QGridLayout* lay = new QGridLayout;
     setLayout(lay);
-    //scale(1, -1);
-
-    //rotate(270);
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent* ev)
@@ -150,6 +145,11 @@ QList<GGraphicsItem*> GraphicsView::getSelectedItems()
         }
     }
     return selectedItem;
+}
+
+std::shared_ptr<GGraphicsStyle> GraphicsView::getStyle() const
+{
+   return m_style;
 }
 
 //---------------------------------------------------------------------GGraphicsScene----------------

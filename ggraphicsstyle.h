@@ -4,6 +4,7 @@
 #include <QPen>
 #include <QBrush>
 #include <memory>
+#include <QStyle>
 
 class GGraphicsStyle
 {

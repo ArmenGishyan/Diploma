@@ -125,8 +125,6 @@ void MainWindow::createStyleToolBar()
     m_styleToolBar = new QToolBar(this);
     connect(m_styleToolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(styleActionClicked(QAction*)));
     GPenColor* lineColor = new GPenColor;
-    lineColor->setText("Color");
-    lineColor->setIcon(QIcon(":/Icons/color.png"));
     m_styleToolBar->addAction(lineColor);
 
     GPenStyle* penStyle = new GPenStyle;
@@ -134,6 +132,8 @@ void MainWindow::createStyleToolBar()
     penStyle->setIcon(QIcon(":/Icons/penStyle.png"));
     m_styleToolBar->addAction(penStyle);
 
+    GBrushColor* brushColor = new GBrushColor;
+    m_styleToolBar->addAction(brushColor);
 
     addToolBar(Qt::LeftToolBarArea, m_styleToolBar);
 }
